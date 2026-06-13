@@ -1,1 +1,525 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZamTransit | Unified Dispatch System</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Institutional styling overlays */
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background-color: #f3f4f6; }
+        .tab-active { background-color: #1e3a8a; color: white; border-left: 4px solid #fbbf24; }
+        .tab-inactive { color: #6b7280; }
+        .tab-inactive:hover { background-color: #e5e7eb; color: #111827; }
+        .hide { display: none !important; }
+        .spinner { border: 3px solid #f3f3f3; border-top: 3px solid #1e3a8a; border-radius: 50%; width: 20px; height: 20px; animation: spin 1s linear infinite; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    </style>
+</head>
+<body class="flex h-screen overflow-hidden">
 
+    <nav class="w-64 bg-white border-r border-gray-200 flex flex-col justify-between hidden md:flex flex-shrink-0">
+        <div>
+            <div class="h-16 flex items-center px-6 border-b border-gray-200 bg-blue-900 text-white">
+                <span class="text-xl font-bold tracking-wider">ZAM<span class="text-yellow-400">TRANSIT</span></span>
+            </div>
+            <div class="py-4 flex flex-col space-y-1">
+                <button onclick="AppUI.switchTab('passenger-tab')" id="nav-passenger-tab" class="nav-btn tab-active text-left px-6 py-3 font-medium transition-colors">Passenger Portal</button>
+                <button onclick="AppUI.switchTab('driver-tab')" id="nav-driver-tab" class="nav-btn tab-inactive text-left px-6 py-3 font-medium transition-colors">Driver Terminal</button>
+                <button onclick="AppUI.switchTab('admin-tab')" id="nav-admin-tab" class="nav-btn tab-inactive text-left px-6 py-3 font-medium transition-colors">Dispatch Admin</button>
+                
+                <div class="px-6 pt-6 pb-2 text-xs font-bold text-gray-400 uppercase tracking-wider">Future Expansion</div>
+                <button class="text-left px-6 py-2 font-medium text-gray-400 cursor-not-allowed">Bus Routes (Beta)</button>
+                <button class="text-left px-6 py-2 font-medium text-gray-400 cursor-not-allowed">Fleet Compliance</button>
+            </div>
+        </div>
+        <div class="p-4 border-t border-gray-200 text-xs text-gray-500">System v1.0.0 (Local Mode)</div>
+    </nav>
+
+    <div class="md:hidden fixed top-0 w-full bg-blue-900 text-white z-50 flex justify-between items-center px-4 h-16">
+        <span class="font-bold">ZAM<span class="text-yellow-400">TRANSIT</span></span>
+        <select onchange="AppUI.switchTab(this.value)" class="bg-blue-800 text-white text-sm rounded p-1 border-none focus:ring-0">
+            <option value="passenger-tab">Passenger Portal</option>
+            <option value="driver-tab">Driver Terminal</option>
+            <option value="admin-tab">Dispatch Admin</option>
+        </select>
+    </div>
+
+    <main class="flex-1 flex flex-col h-screen overflow-y-auto pt-16 md:pt-0 pb-6 px-4 md:px-8">
+        
+        <section id="passenger-tab" class="view-section py-6 max-w-3xl mx-auto w-full">
+            <h2 class="text-2xl font-bold text-gray-800 mb-6">Request Transport</h2>
+            <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+                <form id="ride-request-form" onsubmit="AppControllers.handleRideRequest(event)" class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Pickup Rank</label>
+                        <select id="pass-rank-select" required class="w-full border border-gray-300 rounded-md p-2.5 focus:ring-blue-500 focus:border-blue-500"></select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Destination</label>
+                        <input type="text" id="pass-destination" required placeholder="e.g., Shoprite Town Centre" class="w-full border border-gray-300 rounded-md p-2.5 focus:ring-blue-500 focus:border-blue-500">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Estimated Distance (km) <span class="text-gray-400 font-normal">- MVP Override</span></label>
+                        <input type="number" id="pass-distance" required min="1" step="0.1" value="5" class="w-full border border-gray-300 rounded-md p-2.5 focus:ring-blue-500 focus:border-blue-500">
+                    </div>
+                    <div class="bg-gray-50 p-4 rounded border border-gray-200 mt-4 flex justify-between items-center">
+                        <span class="text-gray-600 font-medium">Estimated Fare:</span>
+                        <span id="pass-fare-estimate" class="text-xl font-bold text-green-700">ZMW 0.00</span>
+                    </div>
+                    <button type="submit" class="w-full bg-blue-900 text-white font-bold py-3 rounded-md hover:bg-blue-800 transition shadow-sm mt-4">Confirm & Request</button>
+                </form>
+            </div>
+            
+            <div id="passenger-status-area" class="mt-6 hide bg-green-50 border border-green-200 p-6 rounded-lg">
+                <h3 class="text-lg font-bold text-green-800 mb-2">Trip Assigned</h3>
+                <p class="text-green-700" id="passenger-driver-info">Driver: -- | Status: En Route</p>
+            </div>
+        </section>
+
+        <section id="driver-tab" class="view-section hide py-6 max-w-3xl mx-auto w-full">
+            <h2 class="text-2xl font-bold text-gray-800 mb-6">Driver Terminal</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+                    <h3 class="text-lg font-bold text-gray-800 mb-4">Operations</h3>
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Driver ID / Name</label>
+                            <input type="text" id="driver-name" placeholder="Enter Name" class="w-full border border-gray-300 rounded-md p-2">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Assign to Rank</label>
+                            <select id="driver-rank-select" class="w-full border border-gray-300 rounded-md p-2"></select>
+                        </div>
+                        <div class="flex space-x-2">
+                            <button onclick="AppControllers.handleDriverRegister()" class="flex-1 bg-gray-200 text-gray-800 font-medium py-2 rounded hover:bg-gray-300">Register</button>
+                            <button onclick="AppControllers.handleDriverCheckIn()" class="flex-1 bg-blue-900 text-white font-bold py-2 rounded shadow-sm hover:bg-blue-800">Check Into Rank</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200 flex flex-col justify-center items-center text-center">
+                    <h3 class="text-sm font-bold text-gray-500 uppercase tracking-wide mb-2">Current Status</h3>
+                    <div id="driver-status-badge" class="text-xl font-bold text-gray-400 mb-4">OFFLINE</div>
+                    <div id="driver-queue-pos" class="text-sm text-gray-600 mb-4">Queue Position: N/A</div>
+                    
+                    <div id="active-trip-panel" class="hide w-full bg-blue-50 border border-blue-200 p-4 rounded text-left">
+                        <div class="font-bold text-blue-900 mb-1">Active Trip Assigned!</div>
+                        <div class="text-sm text-blue-800 mb-4" id="driver-trip-details">Destination: --<br>Est Fare: ZMW --</div>
+                        <button onclick="AppControllers.handleCompleteTrip()" class="w-full bg-green-600 text-white font-bold py-2 rounded shadow-sm hover:bg-green-700">Complete Trip & Requeue</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="admin-tab" class="view-section hide py-6 w-full max-w-6xl mx-auto">
+            <h2 class="text-2xl font-bold text-gray-800 mb-6">Dispatch Administration</h2>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200 lg:col-span-1">
+                    <h3 class="text-lg font-bold text-gray-800 mb-4">Rank Management</h3>
+                    <form onsubmit="AppControllers.handleCreateRank(event)" class="space-y-3 mb-6">
+                        <input type="text" id="admin-rank-name" required placeholder="New Rank Name" class="w-full border border-gray-300 rounded p-2 text-sm">
+                        <input type="number" id="admin-rank-fee" required placeholder="Base Fee (ZMW)" class="w-full border border-gray-300 rounded p-2 text-sm">
+                        <button type="submit" class="w-full bg-gray-800 text-white font-medium py-2 rounded text-sm hover:bg-gray-700">Add Rank</button>
+                    </form>
+                    <div class="overflow-y-auto max-h-64">
+                        <ul id="admin-rank-list" class="space-y-2 text-sm"></ul>
+                    </div>
+                </div>
+
+                <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200 lg:col-span-2">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-lg font-bold text-gray-800">Live Queue Monitor (FIFO)</h3>
+                        <button onclick="AppUI.renderAdminQueues()" class="text-blue-600 text-sm hover:underline">Refresh</button>
+                    </div>
+                    <div id="admin-queue-view" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        </div>
+                </div>
+
+                <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200 lg:col-span-3">
+                    <h3 class="text-lg font-bold text-gray-800 mb-4">Recent Trip Logs</h3>
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full text-left text-sm whitespace-nowrap">
+                            <thead class="bg-gray-100 uppercase tracking-wider text-gray-600">
+                                <tr>
+                                    <th class="px-4 py-2 rounded-tl-lg">Trip ID</th>
+                                    <th class="px-4 py-2">Rank</th>
+                                    <th class="px-4 py-2">Driver</th>
+                                    <th class="px-4 py-2">Destination</th>
+                                    <th class="px-4 py-2">Fare</th>
+                                    <th class="px-4 py-2 rounded-tr-lg">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="admin-trip-list" class="divide-y divide-gray-200">
+                                </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+<script>
+/**
+ * ZAMTRANSIT SYSTEM LOGIC
+ * Architecture: Modular Services abstracted over Data Layer
+ */
+
+// ==========================================
+// 1. DATA LAYER (Mocking future API/Backend)
+// ==========================================
+const DataLayer = {
+    get: async (key) => JSON.parse(localStorage.getItem(key)) || [],
+    set: async (key, data) => localStorage.setItem(key, JSON.stringify(data)),
+    
+    // Seed default data for MVP demonstration
+    seed: async () => {
+        if (!localStorage.getItem('ranks')) {
+            await DataLayer.set('ranks', [
+                { id: 'r_1', name: 'Town Centre Main', baseFee: 15, status: 'active' },
+                { id: 'r_2', name: 'Kapisha Rank', baseFee: 10, status: 'active' }
+            ]);
+            await DataLayer.set('drivers', []);
+            await DataLayer.set('queues', { 'r_1': [], 'r_2': [] });
+            await DataLayer.set('trips', []);
+        }
+    }
+};
+
+// ==========================================
+// 2. MODULAR SERVICES
+// ==========================================
+const RankService = {
+    getAllRanks: async () => await DataLayer.get('ranks'),
+    createRank: async (name, baseFee) => {
+        const ranks = await RankService.getAllRanks();
+        const newRank = { id: 'r_' + Date.now(), name, baseFee: parseFloat(baseFee), status: 'active' };
+        ranks.push(newRank);
+        await DataLayer.set('ranks', ranks);
+        
+        // Initialize queue for new rank
+        const queues = await DataLayer.get('queues');
+        queues[newRank.id] = [];
+        await DataLayer.set('queues', queues);
+        return newRank;
+    }
+};
+
+const DriverService = {
+    register: async (name, rankId) => {
+        const drivers = await DataLayer.get('drivers');
+        const driver = { id: 'd_' + Date.now(), name, rankId, state: 'offline', currentTripId: null };
+        drivers.push(driver);
+        await DataLayer.set('drivers', drivers);
+        return driver;
+    },
+    updateState: async (driverId, state, tripId = null) => {
+        const drivers = await DataLayer.get('drivers');
+        const driver = drivers.find(d => d.id === driverId);
+        if(driver) {
+            driver.state = state;
+            driver.currentTripId = tripId;
+            await DataLayer.set('drivers', drivers);
+        }
+    },
+    getDriverInfo: async (driverId) => {
+        const drivers = await DataLayer.get('drivers');
+        return drivers.find(d => d.id === driverId);
+    }
+};
+
+const DispatchService = {
+    joinQueue: async (driverId, rankId) => {
+        const queues = await DataLayer.get('queues');
+        if (!queues[rankId]) queues[rankId] = [];
+        // Prevent duplicate queuing
+        if (!queues[rankId].includes(driverId)) {
+            queues[rankId].push(driverId);
+            await DataLayer.set('queues', queues);
+            await DriverService.updateState(driverId, 'idle');
+        }
+    },
+    getNextDriver: async (rankId) => {
+        const queues = await DataLayer.get('queues');
+        if (queues[rankId] && queues[rankId].length > 0) {
+            const driverId = queues[rankId].shift(); // Strict FIFO
+            await DataLayer.set('queues', queues);
+            return driverId;
+        }
+        return null;
+    },
+    getQueues: async () => await DataLayer.get('queues')
+};
+
+const FareEngine = {
+    calculateEstimated: (baseFee, distance) => {
+        let fare = baseFee;
+        if (distance <= 5) fare += distance * 15; // ZMW 15/km for short distance
+        else if (distance <= 15) fare += (5 * 15) + ((distance - 5) * 10); // ZMW 10/km medium
+        else fare += (5 * 15) + (10 * 10) + ((distance - 15) * 8); // ZMW 8/km long
+        return Math.round(fare);
+    }
+};
+
+const TripService = {
+    createTrip: async (rankId, destination, distance) => {
+        const ranks = await RankService.getAllRanks();
+        const rank = ranks.find(r => r.id === rankId);
+        const fare = FareEngine.calculateEstimated(rank.baseFee, distance);
+
+        const driverId = await DispatchService.getNextDriver(rankId);
+        if (!driverId) throw new Error("No drivers available in queue.");
+
+        const trip = {
+            id: 't_' + Date.now(),
+            rankId, driverId, destination, distance, fare,
+            status: 'in_progress',
+            timestamp: new Date().toISOString()
+        };
+
+        const trips = await DataLayer.get('trips');
+        trips.push(trip);
+        await DataLayer.set('trips', trips);
+
+        await DriverService.updateState(driverId, 'on_trip', trip.id);
+        return trip;
+    },
+    completeTrip: async (tripId) => {
+        const trips = await DataLayer.get('trips');
+        const trip = trips.find(t => t.id === tripId);
+        if (trip) {
+            trip.status = 'completed';
+            await DataLayer.set('trips', trips);
+            // Return driver to back of queue
+            await DispatchService.joinQueue(trip.driverId, trip.rankId);
+            await DriverService.updateState(trip.driverId, 'idle', null);
+        }
+    },
+    getAllTrips: async () => await DataLayer.get('trips')
+};
+
+// ==========================================
+// 3. APPLICATION CONTROLLERS (Event Handlers)
+// ==========================================
+let currentDriverSession = null; // Mock session state
+
+const AppControllers = {
+    handleCreateRank: async (e) => {
+        e.preventDefault();
+        const name = document.getElementById('admin-rank-name').value;
+        const fee = document.getElementById('admin-rank-fee').value;
+        await RankService.createRank(name, fee);
+        e.target.reset();
+        AppUI.renderAdmin();
+        AppUI.populateRankDropdowns();
+    },
+    handleDriverRegister: async () => {
+        const name = document.getElementById('driver-name').value;
+        const rankId = document.getElementById('driver-rank-select').value;
+        if (!name || !rankId) return alert("Please enter name and select rank.");
+        
+        currentDriverSession = await DriverService.register(name, rankId);
+        alert(`Driver ${name} registered successfully.`);
+        AppUI.renderDriverView();
+    },
+    handleDriverCheckIn: async () => {
+        if (!currentDriverSession) return alert("Please register first.");
+        const rankId = document.getElementById('driver-rank-select').value;
+        currentDriverSession.rankId = rankId; // Update local session
+        await DispatchService.joinQueue(currentDriverSession.id, rankId);
+        AppUI.renderDriverView();
+    },
+    handleRideRequest: async (e) => {
+        e.preventDefault();
+        const rankId = document.getElementById('pass-rank-select').value;
+        const destination = document.getElementById('pass-destination').value;
+        const distance = parseFloat(document.getElementById('pass-distance').value);
+        
+        try {
+            const trip = await TripService.createTrip(rankId, destination, distance);
+            const driver = await DriverService.getDriverInfo(trip.driverId);
+            
+            document.getElementById('passenger-status-area').classList.remove('hide');
+            document.getElementById('passenger-driver-info').innerText = `Driver: ${driver.name} | Status: En Route | Fare: ZMW ${trip.fare}`;
+            
+            // Re-render other views to show state updates
+            AppUI.renderDriverView();
+            AppUI.renderAdminQueues();
+            AppUI.renderAdminTrips();
+        } catch (error) {
+            alert(error.message);
+        }
+    },
+    handleCompleteTrip: async () => {
+        if(!currentDriverSession || !currentDriverSession.currentTripId) return;
+        await TripService.completeTrip(currentDriverSession.currentTripId);
+        currentDriverSession = await DriverService.getDriverInfo(currentDriverSession.id); // Refresh session
+        AppUI.renderDriverView();
+        AppUI.renderAdminQueues();
+        AppUI.renderAdminTrips();
+        document.getElementById('passenger-status-area').classList.add('hide'); // Reset passenger view
+    },
+    updateFareEstimate: async () => {
+        const rankId = document.getElementById('pass-rank-select').value;
+        const distance = parseFloat(document.getElementById('pass-distance').value) || 0;
+        if(!rankId) return;
+        const ranks = await RankService.getAllRanks();
+        const rank = ranks.find(r => r.id === rankId);
+        if(rank) {
+            const est = FareEngine.calculateEstimated(rank.baseFee, distance);
+            document.getElementById('pass-fare-estimate').innerText = `ZMW ${est}.00`;
+        }
+    }
+};
+
+// ==========================================
+// 4. UI RENDERER
+// ==========================================
+const AppUI = {
+    switchTab: (tabId) => {
+        document.querySelectorAll('.view-section').forEach(el => el.classList.add('hide'));
+        document.getElementById(tabId).classList.remove('hide');
+        
+        document.querySelectorAll('.nav-btn').forEach(btn => {
+            btn.classList.remove('tab-active');
+            btn.classList.add('tab-inactive');
+        });
+        const activeBtn = document.getElementById(`nav-${tabId}`);
+        if(activeBtn) {
+            activeBtn.classList.remove('tab-inactive');
+            activeBtn.classList.add('tab-active');
+        }
+
+        if(tabId === 'admin-tab') AppUI.renderAdmin();
+        if(tabId === 'driver-tab') AppUI.renderDriverView();
+    },
+
+    populateRankDropdowns: async () => {
+        const ranks = await RankService.getAllRanks();
+        const options = ranks.map(r => `<option value="${r.id}">${r.name}</option>`).join('');
+        document.getElementById('pass-rank-select').innerHTML = options;
+        document.getElementById('driver-rank-select').innerHTML = options;
+        AppControllers.updateFareEstimate(); // Trigger initial calc
+    },
+
+    renderDriverView: async () => {
+        const badge = document.getElementById('driver-status-badge');
+        const activePanel = document.getElementById('active-trip-panel');
+        const queuePosText = document.getElementById('driver-queue-pos');
+
+        if (!currentDriverSession) {
+            badge.innerText = 'UNREGISTERED';
+            badge.className = 'text-xl font-bold text-gray-400 mb-4';
+            activePanel.classList.add('hide');
+            return;
+        }
+
+        // Fetch fresh state
+        currentDriverSession = await DriverService.getDriverInfo(currentDriverSession.id);
+
+        if (currentDriverSession.state === 'idle') {
+            badge.innerText = 'QUEUED';
+            badge.className = 'text-xl font-bold text-yellow-500 mb-4';
+            activePanel.classList.add('hide');
+            
+            const queues = await DispatchService.getQueues();
+            const myQueue = queues[currentDriverSession.rankId] || [];
+            const pos = myQueue.indexOf(currentDriverSession.id);
+            queuePosText.innerText = pos !== -1 ? `Queue Position: ${pos + 1}` : 'Not in queue';
+        } 
+        else if (currentDriverSession.state === 'on_trip') {
+            badge.innerText = 'ON TRIP';
+            badge.className = 'text-xl font-bold text-blue-600 mb-4';
+            queuePosText.innerText = 'Dispatched';
+            
+            const trips = await TripService.getAllTrips();
+            const trip = trips.find(t => t.id === currentDriverSession.currentTripId);
+            if(trip) {
+                document.getElementById('driver-trip-details').innerHTML = `Dest: ${trip.destination}<br>Fare: ZMW ${trip.fare}`;
+                activePanel.classList.remove('hide');
+            }
+        }
+    },
+
+    renderAdmin: () => {
+        AppUI.renderAdminRanks();
+        AppUI.renderAdminQueues();
+        AppUI.renderAdminTrips();
+    },
+
+    renderAdminRanks: async () => {
+        const ranks = await RankService.getAllRanks();
+        const list = document.getElementById('admin-rank-list');
+        list.innerHTML = ranks.map(r => `
+            <li class="flex justify-between items-center p-2 bg-gray-50 border border-gray-100 rounded">
+                <span class="font-medium text-gray-700">${r.name}</span>
+                <span class="text-xs bg-gray-200 px-2 py-1 rounded">Base: ZMW ${r.baseFee}</span>
+            </li>
+        `).join('');
+    },
+
+    renderAdminQueues: async () => {
+        const ranks = await RankService.getAllRanks();
+        const queues = await DispatchService.getQueues();
+        const drivers = await DataLayer.get('drivers');
+        
+        const view = document.getElementById('admin-queue-view');
+        view.innerHTML = ranks.map(r => {
+            const q = queues[r.id] || [];
+            const driverNames = q.map(dId => {
+                const d = drivers.find(drv => drv.id === dId);
+                return d ? `<div class="text-xs bg-white border border-gray-200 p-1 mb-1 rounded">${d.name}</div>` : '';
+            }).join('');
+            
+            return `
+            <div class="bg-gray-50 p-3 rounded border border-gray-200">
+                <div class="text-sm font-bold text-gray-700 mb-2 border-b pb-1">${r.name} <span class="float-right bg-blue-100 text-blue-800 px-1 rounded">${q.length}</span></div>
+                <div class="min-h-[50px]">${driverNames || '<div class="text-xs text-gray-400 italic">Queue Empty</div>'}</div>
+            </div>`;
+        }).join('');
+    },
+
+    renderAdminTrips: async () => {
+        const trips = await TripService.getAllTrips();
+        const ranks = await RankService.getAllRanks();
+        const drivers = await DataLayer.get('drivers');
+        
+        const list = document.getElementById('admin-trip-list');
+        // Show last 5 trips
+        const displayTrips = trips.slice(-5).reverse();
+        
+        list.innerHTML = displayTrips.map(t => {
+            const rank = ranks.find(r => r.id === t.rankId)?.name || 'N/A';
+            const driver = drivers.find(d => d.id === t.driverId)?.name || 'N/A';
+            const statusColor = t.status === 'completed' ? 'text-green-600 bg-green-50' : 'text-blue-600 bg-blue-50';
+            
+            return `
+            <tr>
+                <td class="px-4 py-3 border-b text-xs text-gray-500">${t.id.substring(0, 8)}...</td>
+                <td class="px-4 py-3 border-b">${rank}</td>
+                <td class="px-4 py-3 border-b">${driver}</td>
+                <td class="px-4 py-3 border-b">${t.destination}</td>
+                <td class="px-4 py-3 border-b font-medium">ZMW ${t.fare}</td>
+                <td class="px-4 py-3 border-b"><span class="px-2 py-1 rounded text-xs font-bold ${statusColor}">${t.status.toUpperCase()}</span></td>
+            </tr>`;
+        }).join('');
+    }
+};
+
+// ==========================================
+// 5. INITIALIZATION
+// ==========================================
+document.addEventListener('DOMContentLoaded', async () => {
+    await DataLayer.seed();
+    await AppUI.populateRankDropdowns();
+    
+    // Attach event listeners for dynamic calculation
+    document.getElementById('pass-rank-select').addEventListener('change', AppControllers.updateFareEstimate);
+    document.getElementById('pass-distance').addEventListener('input', AppControllers.updateFareEstimate);
+});
+
+</script>
+</body>
+</html>
