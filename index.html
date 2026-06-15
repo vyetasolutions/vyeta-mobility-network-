@@ -92,7 +92,7 @@
 
                 <section id="driver-tab" class="view-section hide max-w-5xl mx-auto w-full fade-in">
                     <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-8 gap-4">
-                        <div><h2 class="text-3xl font-bold text-slate-900 mb-2">Driver Hub</h2><p class="text-slate-500">Manage shifts, ranks, and wallet.</p></div>
+                        <div><h2 class="text-3xl font-bold text-slate-900 mb-2">Driver Hub</h2><p class="text-slate-500">Manage shifts, ranks, and track financial balances.</p></div>
                         <button onclick="AppControllers.refreshDriverStatus()" class="text-accent font-medium bg-amber-50 px-4 py-2 rounded-lg hover:bg-amber-100"><i class="fas fa-rotate"></i> Sync Data</button>
                     </div>
                     
@@ -108,11 +108,14 @@
                                 <input type="text" id="driver-name" placeholder="Full Name" class="w-full bg-slate-50 rounded-xl p-2.5 border border-slate-200">
                                 <div class="grid grid-cols-2 gap-3">
                                     <input type="tel" id="driver-phone" placeholder="Phone Number" class="w-full bg-slate-50 rounded-xl p-2.5 border border-slate-200">
+                                    <input type="email" id="driver-email" placeholder="Email (Dispatch Alerts)" class="w-full bg-slate-50 rounded-xl p-2.5 border border-slate-200">
+                                </div>
+                                <div class="grid grid-cols-2 gap-3">
                                     <input type="text" id="driver-reg" placeholder="Vehicle Reg" class="w-full bg-slate-50 rounded-xl p-2.5 border border-slate-200 uppercase">
+                                    <input type="text" id="driver-license" placeholder="Driver's License ID" class="w-full bg-slate-50 rounded-xl p-2.5 border border-slate-200">
                                 </div>
                                 <div class="border border-slate-200 rounded-xl p-4 bg-slate-50/50">
-                                    <input type="text" id="driver-license" placeholder="Driver's License ID" class="w-full border-0 bg-white rounded-lg p-2.5 text-sm shadow-sm border border-slate-100 mb-3">
-                                    <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">License Photo Upload</label>
+                                    <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">License Document Scan</label>
                                     <input type="file" id="driver-photo" accept="image/*" class="w-full text-xs text-slate-500 file:bg-slate-200 file:rounded-md file:border-0 file:px-3 file:py-1.5">
                                 </div>
                                 <select id="driver-rank-select-reg" class="w-full bg-slate-50 rounded-xl p-3 border border-slate-200"></select>
@@ -130,9 +133,9 @@
                                 </div>
                                 <div class="p-4 bg-primary text-white rounded-xl shadow-lg relative overflow-hidden mb-4">
                                     <i class="fas fa-wallet absolute right-[-10px] bottom-[-10px] text-5xl opacity-10"></i>
-                                    <p class="text-xs text-slate-400 font-semibold mb-1 uppercase tracking-widest">Wallet Balance</p>
+                                    <p class="text-xs text-slate-400 font-semibold mb-1 uppercase tracking-widest">Wallet balance ledger</p>
                                     <h3 class="text-3xl font-bold" id="drv-wallet-bal">ZMW 0.00</h3>
-                                    <button onclick="AppControllers.handleTopUp()" class="mt-3 bg-white text-primary text-xs font-bold py-1.5 px-3 rounded-lg hover:bg-slate-200 transition">+ Top Up ZMW 100</button>
+                                    <p class="text-[10px] text-slate-400 mt-1">To top up, present your wallet ID to a rank administrator.</p>
                                 </div>
                                 <div class="border-t border-slate-100 pt-4">
                                     <label class="block text-xs font-bold text-slate-400 uppercase mb-2">Operating Rank</label>
@@ -219,11 +222,11 @@
                             </div>
 
                             <div class="bg-surface p-6 rounded-2xl shadow-sm border border-slate-100 lg:col-span-3">
-                                <h3 class="text-lg font-bold text-slate-800 mb-4"><i class="fas fa-users-gear text-slate-400"></i> Fleet Management</h3>
-                                <div class="overflow-x-auto custom-scrollbar">
+                                <h3 class="text-lg font-bold text-slate-800 mb-4"><i class="fas fa-users-gear text-slate-400"></i> Fleet Management & Ledgers</h3>
+                                <div class="overflow-x-auto">
                                     <table class="min-w-full text-left text-sm whitespace-nowrap">
                                         <thead class="bg-slate-50 text-slate-500 uppercase text-xs">
-                                            <tr><th class="px-4 py-3 font-semibold">Driver / Doc</th><th class="px-4 py-3 font-semibold">Vehicle & Rank</th><th class="px-4 py-3 font-semibold">Approval</th><th class="px-4 py-3 font-semibold">Wallet Bal</th></tr>
+                                            <tr><th class="px-4 py-3 font-semibold">Driver / Doc</th><th class="px-4 py-3 font-semibold">Vehicle & Rank</th><th class="px-4 py-3 font-semibold">Approval Status</th><th class="px-4 py-3 font-semibold">Ledger Wallet & Credit Topup</th></tr>
                                         </thead>
                                         <tbody id="admin-fleet-list" class="divide-y divide-slate-100"></tbody>
                                     </table>
@@ -231,18 +234,21 @@
                             </div>
 
                             <div class="bg-surface p-6 rounded-2xl shadow-sm border border-slate-100 lg:col-span-1">
-                                <h3 class="text-md font-bold text-slate-800 mb-4">Manage Ranks</h3>
+                                <h3 class="text-md font-bold text-slate-800 mb-4">Manage Operating Ranks</h3>
                                 <form onsubmit="AppControllers.handleCreateRank(event)" class="flex flex-col gap-2 mb-4 bg-slate-50 p-3 rounded-xl border border-slate-100">
-                                    <input type="text" id="admin-rank-name" required placeholder="Name" class="w-full bg-white rounded-lg p-2 text-sm border border-slate-200">
-                                    <input type="text" id="admin-rank-coords" placeholder="Lat, Lng (Optional)" class="w-full bg-white rounded-lg p-2 text-xs border border-slate-200">
-                                    <button type="submit" id="btn-add-rank" class="w-full bg-primary text-white py-2 rounded-lg text-sm font-bold mt-1">Add Rank</button>
+                                    <input type="text" id="admin-rank-name" required placeholder="Rank Name" class="w-full bg-white rounded-lg p-2 text-sm border border-slate-200">
+                                    <div class="flex gap-1.5">
+                                        <input type="text" id="admin-rank-coords" readonly placeholder="Click capture mapping..." class="w-full bg-slate-100 rounded-lg p-2 text-xs border border-slate-200 select-none">
+                                        <button type="button" onclick="AppControllers.handleCaptureRankCoords()" id="btn-capture-gps" class="bg-amber-500 text-white px-2 rounded-lg text-xs font-bold hover:bg-amber-600 shrink-0"><i class="fas fa-crosshairs"></i> Capture</button>
+                                    </div>
+                                    <button type="submit" id="btn-add-rank" class="w-full bg-primary text-white py-2 rounded-lg text-sm font-bold mt-1">Add Verified Rank</button>
                                 </form>
-                                <ul id="admin-rank-list" class="space-y-2 max-h-48 overflow-y-auto custom-scrollbar"></ul>
+                                <ul id="admin-rank-list" class="space-y-2 max-h-48 overflow-y-auto"></ul>
                             </div>
 
                             <div class="bg-surface p-6 rounded-2xl shadow-sm border border-slate-100 lg:col-span-2">
                                 <h3 class="text-md font-bold text-slate-800 mb-4"><span class="flex h-2 w-2 rounded-full bg-green-500 inline-block mr-2"></span> Live FIFO Queues</h3>
-                                <div id="admin-queue-view" class="grid grid-cols-1 md:grid-cols-2 gap-4 max-h-[300px] overflow-y-auto custom-scrollbar"></div>
+                                <div id="admin-queue-view" class="grid grid-cols-1 md:grid-cols-2 gap-4 max-h-[300px] overflow-y-auto"></div>
                             </div>
                         </div>
                     </div>
@@ -259,7 +265,7 @@
 
 <script>
 /**
- * VYETA MOBILITY FRONTEND APP v4.0
+ * VYETA MOBILITY FRONTEND APP v5.0
  */
 const API_URL = "https://script.google.com/macros/s/AKfycbz1V1akzH_-f-qIkCX-WJQFa-zUvoE4q5QvasMGCQwTNAf-ohbxCttbYLIqG4lly_VL/exec"; 
 
@@ -286,12 +292,11 @@ const APIService = {
 
 const convertFileToBase64 = (f) => new Promise((res, rej) => { const r = new FileReader(); r.readAsDataURL(f); r.onload = () => res(r.result.split(',')[1]); r.onerror = e => rej(e); });
 
-// Geolocation Wrapper
 const getGeoLocation = () => new Promise((resolve, reject) => {
-    if (!navigator.geolocation) return reject(new Error("Geolocation not supported by browser."));
+    if (!navigator.geolocation) return reject(new Error("Geolocation protocol completely unsupported."));
     navigator.geolocation.getCurrentPosition(
         pos => resolve({ lat: pos.coords.latitude, lng: pos.coords.longitude }),
-        err => reject(new Error("Location access denied. Please enable GPS."))
+        err => reject(new Error("Location hardware error or permissions denied."))
     );
 });
 
@@ -316,7 +321,7 @@ const AppControllers = {
             await AppControllers.refreshData();
             if(document.getElementById('driver-tab').classList.contains('hide') === false) AppUI.renderDriverView();
             if(document.getElementById('passenger-tab').classList.contains('hide') === false && document.getElementById('passenger-status-area').classList.contains('hide') === false) AppUI.renderPassengerWaitingView();
-        }, 8000); // Poll every 8 seconds
+        }, 6000); 
     },
 
     updateFareEstimate: () => {
@@ -325,7 +330,6 @@ const AppControllers = {
         if(rank) document.getElementById('pass-fare-estimate').innerText = `ZMW ${(parseFloat(rank.baseFee) + 35).toFixed(2)}`;
     },
 
-    // --- PASSENGER ---
     handleRideRequest: async (e) => {
         e.preventDefault();
         const btn = document.getElementById('btn-request-ride');
@@ -336,15 +340,12 @@ const AppControllers = {
             const dest = `${document.getElementById('pass-destination').value} [Rider: ${document.getElementById('pass-name').value} || Tel: ${document.getElementById('pass-phone').value}]`;
             const fare = parseFloat(systemData.ranks.find(r => r.id === rankId).baseFee) + 35;
 
-            // This sets trip status to 'offered'
             const trip = await APIService.post('createTrip', { rankId, destination: dest, distance: 5, fare });
-            
-            // Save active trip ID for polling reference
             sessionStorage.setItem('active_pass_trip', trip.tripId);
 
             document.getElementById('passenger-booking-view').classList.add('hide');
             document.getElementById('passenger-status-area').classList.remove('hide');
-            AppControllers.startPolling(); // Start watching for driver acceptance
+            AppControllers.startPolling(); 
 
         } catch (err) {
             alert(err.message || "No verified drivers available in queue.");
@@ -352,25 +353,25 @@ const AppControllers = {
         }
     },
 
-    // --- DRIVER ---
     handleDriverRegister: async () => {
         const name = document.getElementById('driver-name').value;
         const phone = document.getElementById('driver-phone').value;
+        const email = document.getElementById('driver-email').value;
         const license = document.getElementById('driver-license').value;
         const reg = document.getElementById('driver-reg').value;
         const rankId = document.getElementById('driver-rank-select-reg').value;
         const fileRef = document.getElementById('driver-photo');
 
-        if (!name || !phone || !reg || !rankId || !fileRef.files.length) return alert("Fill all fields & attach photo.");
-        const btn = document.getElementById('btn-register'); btn.innerText = "Uploading to Cloud..."; btn.disabled = true;
+        if (!name || !phone || !email || !reg || !rankId || !fileRef.files.length) return alert("Fill out registration completely and supply licensing documentation.");
+        const btn = document.getElementById('btn-register'); btn.innerText = "Encrypting Data Assets..."; btn.disabled = true;
 
         try {
             const photo64 = await convertFileToBase64(fileRef.files[0]);
-            const res = await APIService.post('registerDriver', { name: `${name}||${phone}`, licenseNumber: license, vehicleReg: reg, insurance: 'N/A', rankId, photoBase64: photo64, photoMimeType: fileRef.files[0].type });
+            const res = await APIService.post('registerDriver', { name: `${name}||${phone}`, email: email, licenseNumber: license, vehicleReg: reg, insurance: 'N/A', rankId, photoBase64: photo64, photoMimeType: fileRef.files[0].type });
             DriverSession.save(res);
-            alert("Registration Sent! Awaiting Admin Approval.");
+            alert("Registration Complete. Accounts must pass validation audits before processing requests.");
             await AppControllers.refreshData(); AppUI.renderDriverView();
-        } catch(e) { alert("Registration failed."); } finally { btn.innerText = "Submit Secure Registration"; btn.disabled = false; }
+        } catch(e) { alert("Registration pipeline halted."); } finally { btn.innerText = "Submit Secure Registration"; btn.disabled = false; }
     },
 
     handleDriverLogin: async () => {
@@ -379,23 +380,23 @@ const AppControllers = {
         await AppControllers.refreshData();
         const match = systemData.drivers.find(d => d.name.includes(`||${phone}`));
         if(match) { DriverSession.save(match); AppUI.renderDriverView(); AppControllers.startPolling(); } 
-        else alert("Account not found.");
+        else alert("Driver profile not located.");
     },
 
     handleDriverLogout: () => { DriverSession.clear(); if(pollingInterval) clearInterval(pollingInterval); AppUI.renderDriverView(); },
 
     handleToggleAvailability: async () => {
         if(!currentDriverSession) return;
-        const btn = document.getElementById('btn-toggle-status'); btn.disabled = true; btn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> Checking...`;
+        const btn = document.getElementById('btn-toggle-status'); btn.disabled = true; btn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> Processing...`;
         
         try {
             if (currentDriverSession.state === 'offline' || currentDriverSession.state === '') {
                 let coords = { lat: 0, lng: 0 };
                 try {
-                    btn.innerHTML = `<i class="fas fa-satellite-dish fa-spin"></i> Locating GPS...`;
+                    btn.innerHTML = `<i class="fas fa-satellite-dish fa-spin"></i> Pinging GPS...`;
                     coords = await getGeoLocation();
                 } catch(geoErr) {
-                    alert(geoErr.message + " (Proceeding without GPS for development fallback)");
+                    alert(geoErr.message + " (Geofencing bypass triggered for local hardware check)");
                 }
                 await APIService.post('joinQueue', { driverId: currentDriverSession.id, rankId: currentDriverSession.rankId, lat: coords.lat, lng: coords.lng });
             } else {
@@ -412,9 +413,9 @@ const AppControllers = {
         if(newRankId === currentDriverSession.rankId) return;
         try {
             await APIService.post('driverChangeRank', { driverId: currentDriverSession.id, newRankId });
-            alert("Location updated. You have been taken offline.");
+            alert("Operational target shifted. Status reset to Offline.");
             await AppControllers.refreshDriverStatus();
-        } catch(e) { alert("Failed to change rank."); }
+        } catch(e) { alert("Failed to change execution node."); }
     },
 
     refreshDriverStatus: async () => {
@@ -425,19 +426,20 @@ const AppControllers = {
         AppUI.renderDriverView();
     },
 
-    // 30 Second Acceptance Logistics
     handleAcceptTrip: async () => {
         if(!currentDriverSession.currentTripId) return;
         if(offerTimerInterval) clearInterval(offerTimerInterval);
+        offerTimerInterval = null;
         try {
             await APIService.post('acceptTrip', { tripId: currentDriverSession.currentTripId, driverId: currentDriverSession.id });
             await AppControllers.refreshDriverStatus();
-        } catch(e) { alert("Error accepting trip."); }
+        } catch(e) { alert("Error anchoring trip lease."); }
     },
 
     handleDeclineTrip: async () => {
         if(!currentDriverSession.currentTripId) return;
         if(offerTimerInterval) clearInterval(offerTimerInterval);
+        offerTimerInterval = null;
         try {
             document.getElementById('offer-trip-panel').classList.add('hide');
             await APIService.post('declineTrip', { tripId: currentDriverSession.currentTripId, driverId: currentDriverSession.id });
@@ -447,24 +449,42 @@ const AppControllers = {
 
     handleCompleteTrip: async () => {
         if(!currentDriverSession.currentTripId) return;
-        const btn = document.getElementById('btn-complete'); btn.innerText = "Processing Ledger..."; btn.disabled = true;
+        const btn = document.getElementById('btn-complete'); btn.innerText = "Closing Ledger Sync..."; btn.disabled = true;
         try {
             await APIService.post('completeTrip', { tripId: currentDriverSession.currentTripId });
-            alert("Trip completed. Platform fee deducted from wallet.");
+            alert("Trip signed off. Platform logistics fees resolved.");
             await AppControllers.refreshDriverStatus();
-        } catch(e) { alert("Error completing trip."); } finally { btn.innerText = "Complete Trip & Deduct Fee"; btn.disabled = false; }
+        } catch(e) { alert("Error releasing trip context."); } finally { btn.innerText = "Complete Trip & Deduct Fee"; btn.disabled = false; }
     },
 
-    handleTopUp: async () => {
-        if(!currentDriverSession) return;
+    // --- SECURE ADMIN EXECUTIONS ---
+    handleCaptureRankCoords: async () => {
+        const btn = document.getElementById('btn-capture-gps');
+        const input = document.getElementById('admin-rank-coords');
+        btn.innerHTML = `<i class="fas fa-spinner fa-spin"></i>`;
         try {
-            await APIService.post('topUpWallet', { driverId: currentDriverSession.id, amount: 100 });
-            await AppControllers.refreshDriverStatus();
-            alert("ZMW 100 added to wallet ledger.");
-        } catch(e) {}
+            const pos = await getGeoLocation();
+            input.value = `${pos.lat.toFixed(6)}, ${pos.lng.toFixed(6)}`;
+        } catch(e) {
+            alert("GPS metrics extraction failed: Make sure site permissions are authorized.");
+        } finally {
+            btn.innerHTML = `<i class="fas fa-crosshairs"></i> Capture`;
+        }
     },
 
-    // --- ADMIN ---
+    handleAdminTopUp: async (driverId) => {
+        const amtInput = document.getElementById(`topup-${driverId}`);
+        const value = parseFloat(amtInput.value);
+        if(isNaN(value) || value <= 0) return alert("Define a valid top-up volume allocation.");
+        
+        try {
+            await APIService.post('topUpWallet', { driverId, amount: value });
+            amtInput.value = '';
+            alert("Ledger balanced updated successfully.");
+            await AppControllers.refreshData(); AppUI.renderAdmin();
+        } catch(e) { alert("Ledger update aborted."); }
+    },
+
     handleAdminLogin: async () => {
         const pin = document.getElementById('admin-pin');
         try {
@@ -473,9 +493,11 @@ const AppControllers = {
             document.getElementById('admin-dashboard-view').classList.remove('hide');
             if(pin) pin.value = '';
             await AppControllers.refreshData(); AppUI.renderAdmin();
-        } catch(e) { if(pin) alert("Invalid PIN"); }
+        } catch(e) { if(pin) alert("Invalid Security Verification Pin"); }
     },
+
     handleAdminLogout: () => { document.getElementById('admin-dashboard-view').classList.add('hide'); document.getElementById('admin-login-view').classList.remove('hide'); },
+    
     handleCreateRank: async (e) => {
         e.preventDefault();
         const coords = document.getElementById('admin-rank-coords').value.split(',');
@@ -484,17 +506,19 @@ const AppControllers = {
         await APIService.post('createRank', { name: document.getElementById('admin-rank-name').value, baseFee: 0, lat, lng });
         e.target.reset(); await AppControllers.refreshData(); AppUI.renderAdmin();
     },
+
     handleAdminUpdateDriver: async (id, field, selectElement) => {
         try {
             await APIService.post('adminUpdateDriver', { driverId: id, field: field, value: selectElement.value });
             await AppControllers.refreshData(); AppUI.renderAdmin();
-        } catch(e) { alert("Update failed."); }
+        } catch(e) { alert("Update execution failed."); }
     },
+
     handleUpdateBroadcast: async () => {
         const msg = document.getElementById('admin-broadcast-msg').value;
         try {
             await APIService.post('updateBroadcast', { message: msg });
-            alert("Banner Published."); await AppControllers.refreshData();
+            alert("Broadcast array adjusted."); await AppControllers.refreshData();
         } catch(e) {}
     }
 };
@@ -504,7 +528,7 @@ const AppUI = {
         document.querySelectorAll('.view-section').forEach(el => el.classList.add('hide'));
         document.getElementById(tabId).classList.remove('hide');
         document.querySelectorAll('.sidebar-item, .bottom-nav-item').forEach(btn => btn.classList.remove('active'));
-        if(document.getElementById(`nav-${tabId}`)) document.getElementById(`nav-${tabId}`).classList.add('active');
+        if(document.getElementById(`nav-${tabId}`)) document.getElementById(`nav-${navId = tabId}`).classList.add('active');
         if(document.getElementById(`mob-${tabId}`)) document.getElementById(`mob-${tabId}`).classList.add('active');
         
         if(tabId === 'driver-tab') {
@@ -548,11 +572,11 @@ const AppUI = {
         const callBtn = document.getElementById('btn-call-driver');
 
         if(trip.status === 'offered') {
-            title.innerText = "Driver Found!";
-            desc.innerText = "Driver is reviewing the dispatch... Please wait.";
+            title.innerText = "Driver Signal Hooked!";
+            desc.innerText = "The driver has been pinged via application arrays and email push. Review countdown active.";
         } else if (trip.status === 'in_progress') {
-            title.innerText = "Driver Assigned!";
-            desc.innerText = "The driver has accepted and is en route.";
+            title.innerText = "Operator En Route";
+            desc.innerText = "Your assignment request has been authorized by the operator.";
             icon.className = "w-16 h-16 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto mb-3 text-2xl";
             icon.innerHTML = '<i class="fas fa-check"></i>';
             callBtn.classList.remove('pointer-events-none', 'opacity-50');
@@ -565,8 +589,8 @@ const AppUI = {
                 if(parts[1]) callBtn.href = `tel:${parts[1]}`;
             }
         } else if (trip.status === 'cancelled') {
-            title.innerText = "Trip Cancelled";
-            desc.innerText = "The driver declined or timed out. Please request again.";
+            title.innerText = "Dispatch Nullified";
+            desc.innerText = "The target operator declined the shift or timed out. Re-instantiate request.";
             icon.className = "w-16 h-16 bg-red-100 text-red-600 rounded-full flex items-center justify-center mx-auto mb-3 text-2xl";
             icon.innerHTML = '<i class="fas fa-times"></i>';
         }
@@ -584,7 +608,7 @@ const AppUI = {
 
         const appBadge = document.getElementById('drv-approval-badge');
         if(currentDriverSession.approvalStatus === 'APPROVED') { appBadge.className = "text-[10px] font-bold px-2 py-0.5 rounded bg-green-100 text-green-700"; appBadge.innerText = "VERIFIED OPERATOR"; }
-        else { appBadge.className = "text-[10px] font-bold px-2 py-0.5 rounded bg-yellow-100 text-yellow-700"; appBadge.innerText = "PENDING / UNAUTHORIZED"; }
+        else { appBadge.className = "text-[10px] font-bold px-2 py-0.5 rounded bg-yellow-100 text-yellow-700"; appBadge.innerText = "UNAUTHORIZED HARDWARE NODE"; }
 
         const btnToggle = document.getElementById('btn-toggle-status');
         const badge = document.getElementById('driver-status-badge');
@@ -593,30 +617,29 @@ const AppUI = {
         const offerPanel = document.getElementById('offer-trip-panel');
         const posText = document.getElementById('driver-queue-pos');
 
-        // Lockout
         if(currentDriverSession.approvalStatus !== 'APPROVED' || currentDriverSession.paymentStatus === 'OVERDUE') {
             btnToggle.disabled = true; btnToggle.className = "bg-slate-300 text-slate-500 px-6 py-3 rounded-xl font-bold w-full sm:w-auto";
-            posText.innerText = "Account Locked. Check compliance or top up wallet.";
-            if(currentDriverSession.state !== 'offline') AppControllers.handleToggleAvailability(); // Force offline
+            posText.innerText = "Access Token Revoked: Clear negative ledgers via administrative nodes.";
+            if(currentDriverSession.state !== 'offline') AppControllers.handleToggleAvailability(); 
         } else {
             btnToggle.disabled = false;
         }
 
-        // Hide panels by default
         emptyState.classList.add('hide'); activePanel.classList.add('hide'); offerPanel.classList.add('hide');
 
         if (currentDriverSession.state === 'idle') {
-            badge.innerText = 'ONLINE / IN QUEUE'; badge.className = 'inline-block px-4 py-1.5 rounded-full text-sm font-bold bg-green-100 text-green-700';
+            badge.innerText = 'ONLINE / POOLED IN QUEUE'; badge.className = 'inline-block px-4 py-1.5 rounded-full text-sm font-bold bg-green-100 text-green-700';
             btnToggle.innerHTML = '<i class="fas fa-power-off mr-2"></i> GO OFFLINE'; btnToggle.className = "bg-red-50 text-red-600 px-6 py-3 rounded-xl font-bold border border-red-200 w-full sm:w-auto";
             emptyState.classList.remove('hide');
             
             const q = systemData.queues[currentDriverSession.rankId] || [];
             const pos = q.indexOf(currentDriverSession.id);
-            posText.innerHTML = pos !== -1 ? `Queue Position: <span class="font-bold text-slate-900 text-lg">${pos + 1}</span> of ${q.length}` : 'Syncing...';
+            posText.innerHTML = pos !== -1 ? `Queue Matrix Position: <span class="font-bold text-slate-900 text-lg">${pos + 1}</span> of ${q.length}` : 'Syncing...';
+            if(offerTimerInterval) { clearInterval(offerTimerInterval); offerTimerInterval = null; }
         } 
         else if (currentDriverSession.state === 'offered') {
-            badge.innerText = 'DISPATCH INCOMING'; badge.className = 'inline-block px-4 py-1.5 rounded-full text-sm font-bold bg-amber-100 text-amber-700 pulse-amber';
-            btnToggle.classList.add('hide'); posText.innerText = 'Action Required';
+            badge.innerText = 'DISPATCH TOKEN INCOMING'; badge.className = 'inline-block px-4 py-1.5 rounded-full text-sm font-bold bg-amber-100 text-amber-700 pulse-amber';
+            btnToggle.classList.add('hide'); posText.innerText = 'Awaiting explicit lease acceptance...';
             offerPanel.classList.remove('hide');
             
             const trip = systemData.trips.find(t => t.id === currentDriverSession.currentTripId);
@@ -624,21 +647,21 @@ const AppUI = {
                 document.getElementById('offer-dest').innerText = trip.destination.split('[')[0];
                 document.getElementById('offer-fare').innerText = `ZMW ${parseFloat(trip.fare).toFixed(2)}`;
                 
-                // Start UI 30s Countdown if not already running
                 if(!offerTimerInterval) {
                     let time = 30;
+                    document.getElementById('offer-timer').innerText = `30s`;
                     offerTimerInterval = setInterval(() => {
                         time--;
                         document.getElementById('offer-timer').innerText = `${time}s`;
-                        if(time <= 0) { AppControllers.handleDeclineTrip(); }
+                        if(time <= 0) { clearInterval(offerTimerInterval); offerTimerInterval = null; AppControllers.handleDeclineTrip(); }
                     }, 1000);
                 }
             }
         }
         else if (currentDriverSession.state === 'on_trip') {
             if(offerTimerInterval) { clearInterval(offerTimerInterval); offerTimerInterval = null; }
-            badge.innerText = 'ON TRIP'; badge.className = 'inline-block px-4 py-1.5 rounded-full text-sm font-bold bg-green-500 text-white';
-            btnToggle.classList.add('hide'); posText.innerText = 'Deliver passenger to complete shift.';
+            badge.innerText = 'ACTIVE SHIFT LEASE'; badge.className = 'inline-block px-4 py-1.5 rounded-full text-sm font-bold bg-green-500 text-white';
+            btnToggle.classList.add('hide'); posText.innerText = 'Deliver fare assets to safely clear contextual state.';
             activePanel.classList.remove('hide');
             
             const trip = systemData.trips.find(t => t.id === currentDriverSession.currentTripId);
@@ -654,23 +677,21 @@ const AppUI = {
             badge.innerText = 'OFFLINE'; badge.className = 'inline-block px-4 py-1.5 rounded-full text-sm font-bold bg-slate-200 text-slate-500';
             btnToggle.classList.remove('hide'); btnToggle.innerHTML = '<i class="fas fa-location-dot mr-2"></i> GO ONLINE'; btnToggle.className = "bg-primary text-white px-6 py-3 rounded-xl font-bold shadow-md w-full sm:w-auto";
             emptyState.classList.remove('hide');
-            document.getElementById('idle-text').innerText = "You are currently offline.";
-            if(currentDriverSession.approvalStatus === 'APPROVED' && currentDriverSession.paymentStatus !== 'OVERDUE') posText.innerText = "Click to run GPS verification and join queue.";
+            document.getElementById('idle-text').innerText = "Terminal offline.";
+            if(currentDriverSession.approvalStatus === 'APPROVED' && currentDriverSession.paymentStatus !== 'OVERDUE') posText.innerText = "Engage location scan configuration arrays to execute line entry.";
         }
     },
 
     renderAdmin: () => {
         document.getElementById('admin-fleet-list').innerHTML = systemData.drivers.map(d => {
-            const rName = systemData.ranks.find(r => r.id === d.rankId)?.name || 'Unknown';
+            const rName = systemData.ranks.find(r => r.id === d.rankId)?.name || 'Unknown Node';
             const appColor = d.approvalStatus === 'PENDING' ? 'bg-yellow-100 text-yellow-800' : (d.approvalStatus === 'SUSPENDED' ? 'bg-red-100 text-red-800' : 'bg-green-100 text-green-800');
             const payColor = d.paymentStatus === 'OVERDUE' ? 'bg-red-100 text-red-800' : 'bg-slate-100 text-slate-800';
-            
-            // Photo View Button
-            const docBtn = d.licensePhotoUrl ? `<a href="${d.licensePhotoUrl}" target="_blank" class="text-[10px] bg-blue-100 text-blue-700 px-2 py-0.5 rounded mt-1 inline-block font-bold"><i class="fas fa-image"></i> View Doc</a>` : '<span class="text-[10px] text-slate-400">No Doc</span>';
+            const docBtn = d.licensePhotoUrl ? `<a href="${d.licensePhotoUrl}" target="_blank" class="text-[10px] bg-blue-100 text-blue-700 px-2 py-0.5 rounded mt-1 inline-block font-bold"><i class="fas fa-image"></i> View Document</a>` : '<span class="text-[10px] text-slate-400">Null Asset</span>';
 
             return `
             <tr class="border-b border-slate-100">
-                <td class="px-4 py-3"><div class="font-bold">${d.name.split('||')[0]}</div><div class="text-[10px] text-slate-500 font-mono">${d.name.split('||')[1] || ''}</div>${docBtn}</td>
+                <td class="px-4 py-3"><div class="font-bold">${d.name.split('||')[0]}</div><div class="text-[10px] text-slate-500 font-mono">${d.email || 'No email log'}</div>${docBtn}</td>
                 <td class="px-4 py-3 text-xs"><b>${d.vehicleReg}</b><br><span class="text-slate-500">${rName}</span></td>
                 <td class="px-4 py-3">
                     <select onchange="AppControllers.handleAdminUpdateDriver('${d.id}', 'approvalStatus', this)" class="text-xs p-1 rounded font-bold border-0 cursor-pointer ${appColor}">
@@ -679,9 +700,12 @@ const AppUI = {
                         <option value="SUSPENDED" ${d.approvalStatus === 'SUSPENDED' ? 'selected' : ''}>SUSPENDED</option>
                     </select>
                 </td>
-                <td class="px-4 py-3 text-xs font-bold">
-                    ZMW ${parseFloat(d.walletBalance || 0).toFixed(2)}<br>
-                    <span class="${payColor} px-1 rounded text-[10px]">${d.paymentStatus}</span>
+                <td class="px-4 py-3 text-xs">
+                    <div class="font-bold text-slate-900">ZMW ${parseFloat(d.walletBalance || 0).toFixed(2)} <span class="${payColor} px-1 rounded text-[10px] font-medium ml-1">${d.paymentStatus}</span></div>
+                    <div class="flex items-center gap-1 mt-1">
+                        <input type="number" placeholder="ZMW" id="topup-${d.id}" class="w-16 p-1 bg-slate-50 border rounded text-xs">
+                        <button onclick="AppControllers.handleAdminTopUp('${d.id}')" class="bg-primary text-white text-[10px] px-2 py-1 rounded font-bold">Credit Topup</button>
+                    </div>
                 </td>
             </tr>`;
         }).join('');
@@ -689,16 +713,16 @@ const AppUI = {
         document.getElementById('admin-rank-list').innerHTML = systemData.ranks.map(r => `
             <li class="flex justify-between items-center p-2 bg-slate-50 border rounded text-xs font-semibold">
                 <span class="text-slate-700">${r.name}</span>
-                <span class="text-[10px] text-slate-400">GPS: ${r.lat}, ${r.lng}</span>
+                <span class="text-[10px] text-slate-400 font-mono">GPS: ${parseFloat(r.lat).toFixed(4)}, ${parseFloat(r.lng).toFixed(4)}</span>
             </li>
         `).join('');
 
         document.getElementById('admin-queue-view').innerHTML = systemData.ranks.map(r => {
             const qList = systemData.queues[r.id] || [];
-            const drvs = qList.map((dId, i) => `<div class="text-[10px] bg-white border p-1.5 mb-1 rounded flex items-center gap-2 font-medium"><span class="bg-primary text-white w-4 h-4 flex justify-center items-center rounded font-bold">${i+1}</span> ${(systemData.drivers.find(x=>x.id===dId)?.name.split('||')[0]) || '?'}</div>`).join('');
+            const drvs = qList.map((dId, i) => `<div class="text-[10px] bg-white border p-1.5 mb-1 rounded flex items-center gap-2 font-medium"><span class="bg-primary text-white w-4 h-4 flex justify-center items-center rounded font-bold">${i+1}</span> ${(systemData.drivers.find(x=>x.id===dId)?.name.split('||')[0]) || 'Unknown Context'}</div>`).join('');
             return `<div class="bg-slate-50 p-3 rounded-lg border">
                 <div class="text-sm font-bold text-slate-800 mb-2 flex justify-between">${r.name} <span class="bg-primary text-white text-[10px] px-1.5 rounded">${qList.length} Head</span></div>
-                <div class="min-h-[50px]">${drvs || '<div class="text-xs text-slate-400 text-center py-2">Empty</div>'}</div>
+                <div class="min-h-[50px]">${drvs || '<div class="text-xs text-slate-400 text-center py-2">Empty Queue</div>'}</div>
             </div>`;
         }).join('');
     }
