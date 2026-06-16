@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en" class="dark">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Premium Mobility</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vyeta Mobility | Premium Transit Protocol</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;600;700&display=swap" rel="stylesheet">
@@ -19,252 +19,271 @@
     </script>
     <style>
         body { background-color: #000000; color: #f4f4f5; -webkit-tap-highlight-color: transparent; }
-        .fade-in { animation: fadeIn 0.5s cubic-bezier(0.16, 1, 0.3, 1); }
-        .slide-up { animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1); }
+        .fade-in { animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
+        .slide-up { animation: slideUp 0.5s cubic-bezier(0.16, 1, 0.3, 1); }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
         
         .pulse-amber { animation: pulseAmber 2s infinite; }
         @keyframes pulseAmber { 0% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.4); } 70% { box-shadow: 0 0 0 15px rgba(245, 158, 11, 0); } 100% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0); } }
         
         .hide { display: none !important; }
         
-        /* Custom Scrollbar for Glass UI */
+        /* Premium Custom Scrollbars */
         ::-webkit-scrollbar { width: 4px; height: 4px; }
         ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: #3f3f46; border-radius: 4px; }
-        ::-webkit-scrollbar-thumb:hover { background: #52525b; }
+        ::-webkit-scrollbar-thumb { background: #27272a; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #3f3f46; }
 
-        /* Premium Nav States */
+        /* Navigation States */
         .bottom-nav-item.active { color: #f4f4f5; }
-        .bottom-nav-item { color: #52525b; transition: all 0.3s ease; }
-        .sidebar-item.active { background: rgba(255,255,255,0.05); color: #f4f4f5; font-weight: 500; border-right: 2px solid #f59e0b; }
-        .sidebar-item { color: #71717a; transition: all 0.3s ease; }
+        .bottom-nav-item { color: #52525b; transition: all 0.25s ease; }
+        .sidebar-item.active { background: rgba(255,255,255,0.04); color: #f4f4f5; font-weight: 500; border-right: 3px solid #f59e0b; }
+        .sidebar-item { color: #71717a; transition: all 0.25s ease; }
         
-        /* Glass Input Autofill Override */
+        /* Glass UI Autofill Fixes */
         input:-webkit-autofill, input:-webkit-autofill:hover, input:-webkit-autofill:focus, input:-webkit-autofill:active {
             -webkit-box-shadow: 0 0 0 30px #09090b inset !important;
             -webkit-text-fill-color: white !important;
             transition: background-color 5000s ease-in-out 0s;
         }
 
-        /* Ambient background glow */
-        .ambient-glow {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 80vw;
-            height: 80vh;
-            background: radial-gradient(circle, rgba(255,255,255,0.03) 0%, rgba(0,0,0,0) 70%);
-            z-index: -1;
-            pointer-events: none;
-        }
+        /* Subtle Glow Effects */
+        .glass-panel { background: rgba(20, 20, 22, 0.4); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); border: 1px solid rgba(63, 63, 70, 0.3); }
+        .glass-card { background: rgba(9, 9, 11, 0.6); border: 1px solid rgba(63, 63, 70, 0.2); }
     </style>
 </head>
-<body class="flex flex-col h-screen overflow-hidden selection:bg-amber-500/30 antialiased relative">
+<body class="flex flex-col h-screen overflow-hidden selection:bg-amber-500/30 antialiased">
 
-    <div class="ambient-glow"></div>
-
-    <div id="toast-container" class="fixed top-8 left-1/2 transform -translate-x-1/2 z-50 flex flex-col gap-3 pointer-events-none w-full max-w-sm px-4"></div>
-
-    <div id="system-banner" class="hide fixed top-4 left-1/2 -translate-x-1/2 w-[calc(100%-2rem)] max-w-xl bg-zinc-900/80 backdrop-blur-xl border border-zinc-800/80 rounded-2xl px-4 py-3 text-xs font-medium tracking-wide shadow-[0_24px_50px_-12px_rgba(0,0,0,0.7)] flex items-center gap-3 z-50 transition-all duration-300">
-        <span class="flex h-2 w-2 relative">
+    <!-- Global System Broadcast Banner -->
+    <div id="system-banner" class="hide fixed top-4 left-1/2 -translate-x-1/2 w-[calc(100%-2rem)] max-w-xl bg-zinc-900/90 backdrop-blur-2xl border border-zinc-800 rounded-2xl px-4 py-3.5 text-xs font-medium tracking-wide shadow-[0_24px_60px_-12px_rgba(0,0,0,0.85)] flex items-center gap-3 z-50 transition-all duration-300">
+        <span class="flex h-2 w-2 relative shrink-0">
             <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
             <span class="relative inline-flex rounded-full h-2 w-2 bg-amber-500"></span>
         </span>
-        <span id="banner-text" class="text-zinc-300"></span>
+        <span id="banner-text" class="text-zinc-200"></span>
     </div>
 
+    <!-- Main Viewport Layout -->
     <div class="flex flex-1 overflow-hidden">
         
-        <nav class="w-64 bg-black/50 border-r border-zinc-900 flex flex-col justify-between hidden md:flex flex-shrink-0 z-20 h-full backdrop-blur-md">
+        <!-- Sidebar Navigation (Desktop) -->
+        <nav class="w-64 bg-black border-r border-zinc-900 flex flex-col justify-between hidden md:flex flex-shrink-0 z-20 h-full">
             <div>
                 <div class="h-24 flex items-center px-8 border-b border-zinc-900">
                     <span class="text-2xl font-extralight tracking-tight text-white">Vyeta<span class="font-medium text-amber-500">Mobility</span></span>
                 </div>
                 <div class="py-6 flex flex-col space-y-1">
-                    <button onclick="AppUI.switchTab('passenger-tab')" id="nav-passenger-tab" class="sidebar-item active text-left px-8 py-4 text-sm flex items-center gap-4"><i class="fas fa-location-arrow w-5"></i> Request Ride</button>
-                    <button onclick="AppUI.switchTab('driver-tab')" id="nav-driver-tab" class="sidebar-item text-left px-8 py-4 text-sm flex items-center gap-4"><i class="fas fa-steering-wheel w-5"></i> Driver Dashboard</button>
-                    <button onclick="AppUI.switchTab('admin-tab')" id="nav-admin-tab" class="sidebar-item text-left px-8 py-4 text-sm flex items-center gap-4"><i class="fas fa-fingerprint w-5"></i> System Admin</button>
+                    <button onclick="AppUI.switchTab('passenger-tab')" id="nav-passenger-tab" class="sidebar-item active text-left px-8 py-4 text-sm flex items-center gap-4"><i class="fas fa-location-arrow w-5 text-center"></i> Request Rider</button>
+                    <button onclick="AppUI.switchTab('driver-tab')" id="nav-driver-tab" class="sidebar-item text-left px-8 py-4 text-sm flex items-center gap-4"><i class="fas fa-car w-5 text-center"></i> Driver Portal</button>
+                    <button onclick="AppUI.switchTab('admin-tab')" id="nav-admin-tab" class="sidebar-item text-left px-8 py-4 text-sm flex items-center gap-4"><i class="fas fa-sliders w-5 text-center"></i> Core System</button>
                 </div>
             </div>
-            <div class="p-8 text-[10px] tracking-widest uppercase font-bold text-zinc-700">Vyeta Digital Solutions</div>
+            <div class="p-8 text-[10px] tracking-widest uppercase font-bold text-zinc-700 border-t border-zinc-900/60">Vyeta Digital Solutions</div>
         </nav>
 
-        <main class="flex-1 flex flex-col h-full overflow-y-auto relative w-full bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-zinc-900/20 via-black to-black">
+        <!-- Main Content Area -->
+        <main class="flex-1 flex flex-col h-full overflow-y-auto relative w-full bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-zinc-900/30 via-black to-black">
             
+            <!-- Sticky Header (Mobile Only) -->
             <header class="md:hidden sticky top-0 w-full bg-black/80 backdrop-blur-md z-40 flex justify-center items-center h-16 border-b border-zinc-900 shrink-0">
                 <span class="text-lg font-extralight tracking-tight text-white">Vyeta<span class="font-medium text-amber-500">Mobility</span></span>
             </header>
 
-            <div class="flex-1 p-4 pb-24 md:p-8 flex flex-col">
+            <div class="flex-1 p-4 pb-28 md:p-8 flex flex-col">
                 
+                <!-- PASSENGER TAB -->
                 <section id="passenger-tab" class="view-section max-w-xl w-full mx-auto my-auto fade-in">
-                    
                     <header class="mb-8 text-center md:text-left slide-up">
-                        <h1 class="text-4xl font-extralight tracking-tight text-white mb-2">Where to <span class="font-medium text-transparent bg-clip-text bg-gradient-to-r from-amber-400 to-amber-200">today?</span></h1>
-                        <p class="text-sm font-light text-zinc-400 tracking-wide">Premium travel in Zambia.</p>
+                        <h1 class="text-4xl font-extralight tracking-tight text-white mb-2">Move <span class="font-medium text-transparent bg-clip-text bg-gradient-to-r from-amber-400 to-amber-200">Seamlessly</span></h1>
+                        <p class="text-sm font-light text-zinc-400 tracking-wide">Direct matching premium transit</p>
                     </header>
 
-                    <div id="passenger-booking-view" class="bg-zinc-900/40 backdrop-blur-2xl border border-zinc-800/40 shadow-[0_32px_64px_-16px_rgba(0,0,0,0.6)] rounded-[2rem] p-6 sm:p-8 relative overflow-hidden slide-up">
+                    <!-- Ride Request Form Card -->
+                    <div id="passenger-booking-view" class="glass-panel shadow-[0_32px_64px_-16px_rgba(0,0,0,0.7)] rounded-[2rem] p-6 sm:p-8 relative overflow-hidden slide-up">
                         <form id="ride-request-form" onsubmit="AppControllers.handleRideRequest(event)" class="space-y-6">
                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                <div class="space-y-1.5"><label class="text-[10px] font-bold tracking-widest text-zinc-500 uppercase">Passenger</label><input type="text" id="pass-name" placeholder="Your name" required class="w-full bg-zinc-950/60 border border-zinc-800/60 focus:border-amber-500/60 rounded-xl px-4 py-3.5 text-sm text-white placeholder-zinc-600 focus:outline-none transition-all duration-200"></div>
-                                <div class="space-y-1.5"><label class="text-[10px] font-bold tracking-widest text-zinc-500 uppercase">Contact</label><input type="tel" id="pass-phone" placeholder="Phone number" required class="w-full bg-zinc-950/60 border border-zinc-800/60 focus:border-amber-500/60 rounded-xl px-4 py-3.5 text-sm text-white placeholder-zinc-600 focus:outline-none transition-all duration-200"></div>
+                                <div class="space-y-1.5">
+                                    <label class="text-[10px] font-bold tracking-widest text-zinc-500 uppercase">Passenger Name</label>
+                                    <input type="text" id="pass-name" placeholder="Name or Alias" required class="w-full bg-zinc-950/80 border border-zinc-800/80 focus:border-amber-500 rounded-xl px-4 py-3.5 text-sm text-white placeholder-zinc-600 focus:outline-none transition-all duration-200">
+                                </div>
+                                <div class="space-y-1.5">
+                                    <label class="text-[10px] font-bold tracking-widest text-zinc-500 uppercase">Contact Terminal</label>
+                                    <input type="tel" id="pass-phone" placeholder="Phone number" required class="w-full bg-zinc-950/80 border border-zinc-800/80 focus:border-amber-500 rounded-xl px-4 py-3.5 text-sm text-white placeholder-zinc-600 focus:outline-none transition-all duration-200">
+                                </div>
                             </div>
                             
                             <div class="space-y-1.5">
-                                <label class="text-[10px] font-bold tracking-widest text-zinc-500 uppercase">Pickup Location</label>
+                                <label class="text-[10px] font-bold tracking-widest text-zinc-500 uppercase">Terminal Station (Pickup)</label>
                                 <div class="relative">
-                                    <select id="pass-rank-select" required onchange="AppControllers.updateFareEstimate()" class="w-full bg-zinc-950/60 border border-zinc-800/60 focus:border-amber-500/60 rounded-xl px-4 py-3.5 text-sm text-white appearance-none focus:outline-none transition-all duration-200 cursor-pointer"></select>
+                                    <select id="pass-rank-select" required onchange="AppControllers.updateFareEstimate()" class="w-full bg-zinc-950/80 border border-zinc-800/80 focus:border-amber-500 rounded-xl px-4 py-3.5 text-sm text-white appearance-none focus:outline-none transition-all duration-200 cursor-pointer"></select>
                                     <div class="absolute inset-y-0 right-4 flex items-center pointer-events-none text-zinc-500 text-xs"><i class="fas fa-chevron-down"></i></div>
                                 </div>
                             </div>
                             
                             <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                                <div class="sm:col-span-2 space-y-1.5"><label class="text-[10px] font-bold tracking-widest text-zinc-500 uppercase">Destination</label><input type="text" id="pass-destination" placeholder="Where to?" required class="w-full bg-zinc-950/60 border border-zinc-800/60 focus:border-amber-500/60 rounded-xl px-4 py-3.5 text-sm text-white placeholder-zinc-600 focus:outline-none transition-all duration-200"></div>
-                                <div class="space-y-1.5"><label class="text-[10px] font-bold tracking-widest text-zinc-500 uppercase">Distance</label>
+                                <div class="sm:col-span-2 space-y-1.5">
+                                    <label class="text-[10px] font-bold tracking-widest text-zinc-500 uppercase">Target Destination</label>
+                                    <input type="text" id="pass-destination" placeholder="Where to?" required class="w-full bg-zinc-950/80 border border-zinc-800/80 focus:border-amber-500 rounded-xl px-4 py-3.5 text-sm text-white placeholder-zinc-600 focus:outline-none transition-all duration-200">
+                                </div>
+                                <div class="space-y-1.5">
+                                    <label class="text-[10px] font-bold tracking-widest text-zinc-500 uppercase">Est. Distance</label>
                                     <div class="relative">
-                                        <input type="number" id="pass-distance" value="5" min="1" step="0.5" oninput="AppControllers.updateFareEstimate()" class="w-full bg-zinc-950/60 border border-zinc-800/60 focus:border-amber-500/60 rounded-xl pl-4 pr-10 py-3.5 text-sm text-white focus:outline-none transition-all duration-200">
+                                        <input type="number" id="pass-distance" value="5" min="1" step="0.5" oninput="AppControllers.updateFareEstimate()" class="w-full bg-zinc-950/80 border border-zinc-800/80 focus:border-amber-500 rounded-xl pl-4 pr-10 py-3.5 text-sm text-white focus:outline-none transition-all duration-200">
                                         <span class="absolute right-4 top-1/2 -translate-y-1/2 text-xs font-bold text-zinc-600">KM</span>
                                     </div>
                                 </div>
                             </div>
                             
-                            <div class="bg-gradient-to-b from-zinc-950/80 to-zinc-950/40 border border-zinc-800/60 rounded-2xl p-5 flex justify-between items-center">
-                                <div><p class="text-[10px] font-bold tracking-widest text-zinc-500 uppercase mb-0.5">Estimated Fare</p><p class="text-xs text-zinc-400 font-light">Upfront pricing</p></div>
+                            <div class="bg-gradient-to-b from-zinc-950 to-zinc-900/60 border border-zinc-800/80 rounded-2xl p-5 flex justify-between items-center">
+                                <div>
+                                    <p class="text-[10px] font-bold tracking-widest text-zinc-500 uppercase mb-0.5">Guaranteed Transparent Fare</p>
+                                    <p class="text-xs text-zinc-400 font-light">Zero surge pricing algorithm</p>
+                                </div>
                                 <div class="text-right"><span id="pass-fare-estimate" class="text-3xl font-light tracking-tight text-white">ZMW <span class="font-medium text-amber-400">0.00</span></span></div>
                             </div>
 
-                            <button type="submit" id="btn-request-ride" class="w-full bg-white text-black font-semibold text-sm py-4 rounded-xl shadow-[0_4px_20px_rgba(255,255,255,0.15)] hover:bg-zinc-200 active:scale-[0.98] transition-all duration-200 mt-2">Confirm Booking</button>
+                            <button type="submit" id="btn-request-ride" class="w-full bg-white text-black font-semibold text-sm py-4 rounded-xl shadow-[0_4px_20px_rgba(255,255,255,0.15)] hover:bg-zinc-200 active:scale-[0.98] transition-all duration-200 mt-2">Broadcast Transit Request</button>
                         </form>
                     </div>
                     
-                    <div id="passenger-status-area" class="hide fade-in bg-zinc-900/40 backdrop-blur-2xl border border-zinc-800/40 rounded-[2rem] p-6 sm:p-8 relative overflow-hidden mt-6 shadow-2xl">
+                    <!-- Passenger Status/Waiting Board -->
+                    <div id="passenger-status-area" class="hide fade-in glass-panel rounded-[2rem] p-6 sm:p-8 relative overflow-hidden mt-6 shadow-2xl">
                         <div class="text-center mb-8 mt-4">
                             <div id="pass-loading-icon" class="w-20 h-20 bg-zinc-950 border border-zinc-800 text-amber-500 rounded-full flex items-center justify-center mx-auto mb-6 text-2xl shadow-[0_0_30px_rgba(245,158,11,0.15)] pulse-amber"><i class="fas fa-spinner fa-spin"></i></div>
-                            <h3 class="text-2xl font-light text-white tracking-tight" id="pass-status-title">Finding your ride...</h3>
-                            <p class="text-zinc-400 text-sm mt-2" id="pass-status-desc">Contacting drivers nearby.</p>
+                            <h3 class="text-2xl font-light text-white tracking-tight" id="pass-status-title">Locating Network Asset</h3>
+                            <p class="text-zinc-400 text-sm mt-2" id="pass-status-desc">Establishing peer-to-peer connection...</p>
                         </div>
-                        <div class="bg-zinc-950/60 border border-zinc-800/60 rounded-xl p-5 mb-6 space-y-3">
-                            <div class="flex justify-between items-center"><span class="text-xs font-bold tracking-widest text-zinc-500 uppercase">Driver</span><span class="font-medium text-white" id="match-driver-name">--</span></div>
-                            <div class="h-px w-full bg-zinc-800/50"></div>
-                            <div class="flex justify-between items-center"><span class="text-xs font-bold tracking-widest text-zinc-500 uppercase">Vehicle</span><span class="font-mono text-amber-400 text-sm" id="match-vehicle">--</span></div>
+                        <div class="bg-zinc-950/80 border border-zinc-800/80 rounded-xl p-5 mb-6 space-y-3">
+                            <div class="flex justify-between items-center"><span class="text-xs font-bold tracking-widest text-zinc-500 uppercase">Assigned Pilot</span><span class="font-medium text-white" id="match-driver-name">--</span></div>
+                            <div class="h-px w-full bg-zinc-800/40"></div>
+                            <div class="flex justify-between items-center"><span class="text-xs font-bold tracking-widest text-zinc-500 uppercase">Asset Registry</span><span class="font-mono text-amber-400 text-sm" id="match-vehicle">--</span></div>
                         </div>
                         <div class="flex gap-3">
-                            <a href="#" id="btn-call-driver" class="flex-1 bg-white text-black font-medium py-3.5 rounded-xl text-center shadow-lg pointer-events-none opacity-20 text-sm active:scale-[0.98] transition-all"><i class="fas fa-phone mr-2"></i> Contact</a>
-                            <button onclick="location.reload()" class="flex-1 bg-zinc-800 text-white font-medium py-3.5 rounded-xl hover:bg-zinc-700 text-sm transition-all active:scale-[0.98]">Cancel Ride</button>
+                            <a href="#" id="btn-call-driver" class="flex-1 bg-white text-black font-medium py-3.5 rounded-xl text-center shadow-lg pointer-events-none opacity-20 text-sm active:scale-[0.98] transition-all"><i class="fas fa-phone mr-2"></i> Secure Voice</a>
+                            <button onclick="location.reload()" class="flex-1 bg-zinc-900 text-white font-medium py-3.5 rounded-xl border border-zinc-800 hover:bg-zinc-800 text-sm transition-all active:scale-[0.98]">Abort Routing</button>
                         </div>
                     </div>
                 </section>
 
+                <!-- DRIVER HUB TAB -->
                 <section id="driver-tab" class="view-section hide max-w-5xl mx-auto w-full fade-in pt-4">
                     <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-8 gap-4">
-                        <div><h2 class="text-3xl font-extralight tracking-tight text-white mb-1">Driver <span class="font-medium text-white">Dashboard</span></h2><p class="text-zinc-500 text-sm">Manage your working hours and earnings.</p></div>
-                        <button onclick="AppControllers.refreshDriverStatus()" class="text-zinc-300 text-xs font-bold tracking-widest uppercase bg-zinc-900 border border-zinc-800 px-4 py-2.5 rounded-lg hover:bg-zinc-800 transition"><i class="fas fa-rotate mr-2"></i> Refresh</button>
+                        <div>
+                            <h2 class="text-3xl font-extralight tracking-tight text-white mb-1">Driver <span class="font-medium text-white">Portal</span></h2>
+                            <p class="text-zinc-500 text-sm">Low-commission driver-focused protocol infrastructure.</p>
+                        </div>
+                        <button onclick="AppControllers.refreshDriverStatus()" class="text-zinc-300 text-xs font-bold tracking-widest uppercase bg-zinc-900 border border-zinc-800 px-4 py-2.5 rounded-lg hover:bg-zinc-800 transition"><i class="fas fa-rotate mr-2"></i> Telemetry Sync</button>
                     </div>
                     
+                    <!-- Driver Authentication / Registration Gate -->
                     <div id="driver-auth-gate" class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div class="bg-zinc-900/40 backdrop-blur-xl border border-zinc-800/40 p-6 sm:p-8 rounded-[2rem]">
-                            <h3 class="text-sm font-bold tracking-widest text-zinc-400 uppercase mb-6"><i class="fas fa-fingerprint mr-2"></i> Sign In</h3>
-                            <input type="tel" id="login-phone" placeholder="Registered Phone Number" class="w-full bg-zinc-950/60 border border-zinc-800/60 rounded-xl p-3.5 mb-4 text-sm text-white focus:outline-none focus:border-white/20 transition-all">
-                            <button onclick="AppControllers.handleDriverLogin()" id="btn-login-driver" class="w-full bg-white text-black font-semibold py-3.5 rounded-xl hover:bg-zinc-200 text-sm transition-all active:scale-[0.98]">Sign In</button>
+                        <div class="glass-panel p-6 sm:p-8 rounded-[2rem] flex flex-col justify-between">
+                            <div>
+                                <h3 class="text-sm font-bold tracking-widest text-zinc-400 uppercase mb-6"><i class="fas fa-fingerprint text-amber-500 mr-2"></i> Terminal Login</h3>
+                                <input type="tel" id="login-phone" placeholder="Registered Terminal Phone" class="w-full bg-zinc-950/80 border border-zinc-800/80 rounded-xl p-3.5 mb-4 text-sm text-white focus:outline-none focus:border-zinc-700 transition-all">
+                            </div>
+                            <button onclick="AppControllers.handleDriverLogin()" id="btn-login-driver" class="w-full bg-white text-black font-semibold py-3.5 rounded-xl hover:bg-zinc-200 text-sm transition-all active:scale-[0.98]">Access Network</button>
                         </div>
-                        <div class="bg-zinc-900/40 backdrop-blur-xl border border-zinc-800/40 p-6 sm:p-8 rounded-[2rem]">
-                            <h3 class="text-sm font-bold tracking-widest text-zinc-400 uppercase mb-6"><i class="fas fa-id-card mr-2"></i> Create Account</h3>
+                        <div class="glass-panel p-6 sm:p-8 rounded-[2rem]">
+                            <h3 class="text-sm font-bold tracking-widest text-zinc-400 uppercase mb-6"><i class="fas fa-id-card text-amber-500 mr-2"></i> Asset Onboarding</h3>
                             <div class="space-y-3">
-                                <input type="text" id="driver-name" placeholder="Full Name" class="w-full bg-zinc-950/60 border border-zinc-800/60 rounded-xl p-3 text-sm text-white focus:outline-none">
+                                <input type="text" id="driver-name" placeholder="Full Legal Name" class="w-full bg-zinc-950/80 border border-zinc-800/80 rounded-xl p-3 text-sm text-white focus:outline-none focus:border-zinc-700">
                                 <div class="grid grid-cols-2 gap-3">
-                                    <input type="tel" id="driver-phone" placeholder="Phone" class="w-full bg-zinc-950/60 border border-zinc-800/60 rounded-xl p-3 text-sm text-white focus:outline-none">
-                                    <input type="email" id="driver-email" placeholder="Email" class="w-full bg-zinc-950/60 border border-zinc-800/60 rounded-xl p-3 text-sm text-white focus:outline-none">
+                                    <input type="tel" id="driver-phone" placeholder="Mobile Number" class="w-full bg-zinc-950/80 border border-zinc-800/80 rounded-xl p-3 text-sm text-white focus:outline-none focus:border-zinc-700">
+                                    <input type="email" id="driver-email" placeholder="Email Address" class="w-full bg-zinc-950/80 border border-zinc-800/80 rounded-xl p-3 text-sm text-white focus:outline-none focus:border-zinc-700">
                                 </div>
                                 <div class="grid grid-cols-2 gap-3">
-                                    <input type="text" id="driver-reg" placeholder="Vehicle Reg" class="w-full bg-zinc-950/60 border border-zinc-800/60 rounded-xl p-3 text-sm text-white uppercase focus:outline-none">
-                                    <input type="text" id="driver-license" placeholder="License ID" class="w-full bg-zinc-950/60 border border-zinc-800/60 rounded-xl p-3 text-sm text-white focus:outline-none">
+                                    <input type="text" id="driver-reg" placeholder="Vehicle Reg (e.g. BAF...)" class="w-full bg-zinc-950/80 border border-zinc-800/80 rounded-xl p-3 text-sm text-white uppercase focus:outline-none focus:border-zinc-700">
+                                    <input type="text" id="driver-license" placeholder="License ID Reference" class="w-full bg-zinc-950/80 border border-zinc-800/80 rounded-xl p-3 text-sm text-white focus:outline-none focus:border-zinc-700">
                                 </div>
-                                <div class="border border-zinc-800/60 rounded-xl p-4 bg-zinc-950/40">
-                                    <label class="block text-[9px] font-bold text-zinc-500 uppercase mb-2">License Document</label>
-                                    <input type="file" id="driver-photo" accept="image/*" class="w-full text-xs text-zinc-500 file:bg-zinc-800 file:text-white file:border-0 file:rounded-md file:px-3 file:py-1.5 file:mr-3">
+                                <div class="border border-zinc-800/80 rounded-xl p-4 bg-zinc-950/40">
+                                    <label class="block text-[9px] font-bold text-zinc-500 uppercase mb-2">Driver Clearance Documentation</label>
+                                    <input type="file" id="driver-photo" accept="image/*" class="w-full text-xs text-zinc-500 file:bg-zinc-800 file:text-white file:border-0 file:rounded-md file:px-3 file:py-1.5 file:mr-3 file:cursor-pointer">
                                 </div>
-                                <select id="driver-rank-select-reg" class="w-full bg-zinc-950/60 border border-zinc-800/60 rounded-xl p-3 text-sm text-white appearance-none focus:outline-none"></select>
-                                <button onclick="AppControllers.handleDriverRegister()" id="btn-register" class="w-full bg-zinc-800 text-white font-semibold py-3.5 rounded-xl hover:bg-zinc-700 text-sm mt-2 transition-all active:scale-[0.98]">Submit Application</button>
+                                <select id="driver-rank-select-reg" class="w-full bg-zinc-950/80 border border-zinc-800/80 rounded-xl p-3 text-sm text-white appearance-none focus:outline-none focus:border-zinc-700"></select>
+                                <button onclick="AppControllers.handleDriverRegister()" id="btn-register" class="w-full bg-zinc-900 text-white border border-zinc-800 font-semibold py-3.5 rounded-xl hover:bg-zinc-800 text-sm mt-2 transition-all active:scale-[0.98]">Submit Clearance Protocol</button>
                             </div>
                         </div>
                     </div>
 
+                    <!-- Driver Active Dashboard Panel -->
                     <div id="driver-active-dashboard" class="hide grid grid-cols-1 lg:grid-cols-3 gap-6">
-                        <div class="bg-zinc-900/40 backdrop-blur-xl border border-zinc-800/40 rounded-[2rem] p-6 flex flex-col justify-between">
+                        <div class="glass-panel rounded-[2rem] p-6 flex flex-col justify-between">
                             <div>
-                                <div class="p-4 bg-zinc-950/60 border border-zinc-800/60 rounded-xl mb-4">
-                                    <div id="drv-approval-badge" class="text-[9px] font-bold tracking-widest px-2 py-1 rounded inline-block mb-2 border">LOADING</div>
+                                <div class="p-4 bg-zinc-950/80 border border-zinc-800/80 rounded-xl mb-4">
+                                    <div id="drv-approval-badge" class="text-[9px] font-bold tracking-widest px-2 py-1 rounded inline-block mb-2 border">SYNCHRONIZING</div>
                                     <h4 class="font-medium text-white" id="lbl-active-driver">--</h4>
                                 </div>
-                                <div class="p-5 bg-gradient-to-br from-zinc-800 to-zinc-900 border border-zinc-700/50 rounded-xl relative overflow-hidden mb-5">
+                                <div class="p-5 bg-gradient-to-br from-zinc-900 to-black border border-zinc-800 rounded-xl relative overflow-hidden mb-5">
                                     <i class="fas fa-wallet absolute right-[-10px] bottom-[-10px] text-5xl text-white/5"></i>
-                                    <p class="text-[9px] text-zinc-400 font-bold mb-1 uppercase tracking-widest">Ledger Balance</p>
+                                    <p class="text-[9px] text-zinc-500 font-bold mb-1 uppercase tracking-widest">Network Balance</p>
                                     <h3 class="text-3xl font-light text-white" id="drv-wallet-bal">ZMW 0.00</h3>
                                 </div>
-                                <div class="border-t border-zinc-800/50 pt-5">
-                                    <label class="block text-[9px] font-bold text-zinc-500 uppercase mb-2">Current Location</label>
-                                    <select id="driver-rank-select-update" class="w-full bg-zinc-950/60 border border-zinc-800/60 rounded-xl p-3 mb-3 text-sm text-white appearance-none focus:outline-none"></select>
-                                    <button onclick="AppControllers.handleRankChange()" class="w-full bg-zinc-800 text-white text-xs font-bold uppercase tracking-widest py-3 rounded-xl hover:bg-zinc-700 transition">Update Location</button>
+                                <div class="border-t border-zinc-900 pt-5">
+                                    <label class="block text-[9px] font-bold text-zinc-500 uppercase mb-2">Assigned Sector/Station</label>
+                                    <select id="driver-rank-select-update" class="w-full bg-zinc-950/80 border border-zinc-800/80 rounded-xl p-3 mb-3 text-sm text-white appearance-none focus:outline-none"></select>
+                                    <button onclick="AppControllers.handleRankChange()" class="w-full bg-zinc-900 border border-zinc-800 text-white text-xs font-bold uppercase tracking-widest py-3 rounded-xl hover:bg-zinc-800 transition">Relocate Terminal Station</button>
                                 </div>
                             </div>
-                            <button onclick="AppControllers.handleDriverLogout()" class="w-full bg-red-500/10 text-red-500 text-xs font-bold uppercase tracking-widest py-3 rounded-xl hover:bg-red-500/20 mt-6 transition border border-red-500/20">Sign Out</button>
+                            <button onclick="AppControllers.handleDriverLogout()" class="w-full bg-red-500/10 text-red-500 text-xs font-bold uppercase tracking-widest py-3 rounded-xl hover:bg-red-500/20 mt-6 transition border border-red-500/20">Disconnect Terminal</button>
                         </div>
 
-                        <div class="bg-zinc-900/40 backdrop-blur-xl border border-zinc-800/40 rounded-[2rem] lg:col-span-2 flex flex-col overflow-hidden">
-                            <div class="bg-zinc-950/40 p-6 border-b border-zinc-800/40 flex flex-col sm:flex-row justify-between items-center gap-4">
+                        <!-- Main Operational Status Area -->
+                        <div class="glass-panel rounded-[2rem] lg:col-span-2 flex flex-col overflow-hidden">
+                            <div class="bg-zinc-950/60 p-6 border-b border-zinc-900 flex flex-col sm:flex-row justify-between items-center gap-4">
                                 <div class="text-center sm:text-left">
-                                    <div id="driver-status-badge" class="inline-block px-3 py-1 rounded text-[10px] font-bold tracking-widest border border-zinc-700 text-zinc-400">OFFLINE</div>
+                                    <div id="driver-status-badge" class="inline-block px-3 py-1 rounded text-[10px] font-bold tracking-widest border border-zinc-800 text-zinc-500">OFFLINE</div>
                                     <div id="driver-queue-pos" class="text-zinc-500 text-xs mt-2 font-mono">--</div>
                                 </div>
-                                <button id="btn-toggle-status" onclick="AppControllers.handleToggleAvailability()" class="bg-white text-black px-6 py-3 rounded-xl text-sm font-bold w-full sm:w-auto active:scale-[0.98] transition"><i class="fas fa-power-off mr-2"></i> Go Online</button>
+                                <button id="btn-toggle-status" onclick="AppControllers.handleToggleAvailability()" class="bg-white text-black px-6 py-3 rounded-xl text-sm font-bold w-full sm:w-auto active:scale-[0.98] transition"><i class="fas fa-power-off mr-2"></i> Toggle System Shift</button>
                             </div>
                             
-                            <div class="p-6 flex-1 flex flex-col justify-center items-center min-h-[300px] relative">
+                            <div class="p-6 flex-1 flex flex-col justify-center items-center min-h-[320px] relative">
+                                <!-- Idle Network Listening State -->
                                 <div id="empty-trip-state" class="text-center text-zinc-600">
-                                    <i class="fas fa-satellite-dish text-4xl mb-4 opacity-20"></i>
-                                    <p class="text-xs font-medium tracking-wide" id="idle-text">You are currently offline.</p>
+                                    <i class="fas fa-satellite-dish text-4xl mb-4 opacity-30 animate-pulse"></i>
+                                    <p class="text-xs font-medium tracking-wide" id="idle-text">Listening for direct client signals.</p>
                                 </div>
                                 
+                                <!-- Incoming Dispatch Offer -->
                                 <div id="offer-trip-panel" class="hide w-full max-w-sm fade-in">
-                                    <div class="bg-black border border-amber-500/50 rounded-2xl p-6 text-center pulse-amber relative overflow-hidden shadow-[0_0_40px_rgba(245,158,11,0.15)]">
-                                        <div class="bg-amber-500/20 text-amber-400 py-1 px-4 text-[9px] font-bold tracking-widest uppercase absolute top-0 left-0 w-full border-b border-amber-500/30">New Ride Request</div>
+                                    <div class="bg-black border border-amber-500/40 rounded-2xl p-6 text-center pulse-amber relative overflow-hidden shadow-[0_0_40px_rgba(245,158,11,0.1)]">
+                                        <div class="bg-amber-500/10 text-amber-400 py-1.5 px-4 text-[9px] font-bold tracking-widest uppercase absolute top-0 left-0 w-full border-b border-amber-500/20">Incoming Route Signal</div>
                                         <h3 class="text-4xl font-light text-white mt-6 mb-1" id="offer-timer">30s</h3>
-                                        <p class="text-zinc-500 text-[10px] font-bold uppercase tracking-widest mb-6">Remaining to accept</p>
+                                        <p class="text-zinc-500 text-[10px] font-bold uppercase tracking-widest mb-6">Pipeline Expiry</p>
                                         
-                                        <div class="bg-zinc-900/50 p-4 rounded-xl text-left mb-6 border border-zinc-800">
-                                            <p class="text-[9px] text-zinc-500 uppercase font-bold tracking-widest">Destination</p>
+                                        <div class="bg-zinc-950/80 p-4 rounded-xl text-left mb-6 border border-zinc-800">
+                                            <p class="text-[9px] text-zinc-500 uppercase font-bold tracking-widest">Target Vector</p>
                                             <p class="font-medium text-white text-sm truncate mb-3" id="offer-dest">--</p>
-                                            <p class="text-[9px] text-zinc-500 uppercase font-bold tracking-widest">Estimated Fare</p>
+                                            <p class="text-[9px] text-zinc-500 uppercase font-bold tracking-widest">Guaranteed Net Payout</p>
                                             <p class="font-mono text-amber-400 text-lg" id="offer-fare">--</p>
                                         </div>
                                         <div class="flex gap-2">
-                                            <button onclick="AppControllers.handleAcceptRide()" class="flex-1 bg-white text-black text-sm font-bold py-3.5 rounded-xl hover:bg-zinc-200 transition active:scale-[0.98]">Accept</button>
-                                            <button onclick="AppControllers.handleDeclineRide()" class="flex-1 bg-zinc-800 text-white text-sm font-bold py-3.5 rounded-xl hover:bg-zinc-700 transition border border-zinc-700 active:scale-[0.98]">Decline</button>
+                                            <button onclick="AppControllers.handleAcceptRide()" class="flex-1 bg-white text-black text-sm font-bold py-3.5 rounded-xl hover:bg-zinc-200 transition active:scale-[0.98]">Engage</button>
+                                            <button onclick="AppControllers.handleDeclineRide()" class="flex-1 bg-zinc-900 text-white text-sm font-bold py-3.5 rounded-xl hover:bg-zinc-800 transition border border-zinc-800 active:scale-[0.98]">Reject</button>
                                         </div>
                                     </div>
                                 </div>
 
+                                <!-- In-Flight Transit Board -->
                                 <div id="active-trip-panel" class="hide w-full fade-in">
-                                    <div class="bg-zinc-950 border border-green-500/30 rounded-2xl p-6 mb-5 w-full max-w-sm shadow-[0_0_30px_rgba(34,197,94,0.1)] mx-auto">
-                                        <h4 class="font-bold tracking-widest uppercase text-green-500 text-[10px] mb-4 flex items-center"><span class="w-2 h-2 rounded-full bg-green-500 animate-pulse mr-2"></span> On Trip</h4>
+                                    <div class="bg-zinc-950 border border-green-500/20 rounded-2xl p-6 mb-5 w-full max-w-sm shadow-[0_0_30px_rgba(34,197,94,0.05)] mx-auto">
+                                        <h4 class="font-bold tracking-widest uppercase text-green-500 text-[10px] mb-4 flex items-center"><span class="w-2 h-2 rounded-full bg-green-500 animate-pulse mr-2"></span> Active Route Manifest</h4>
                                         <div class="space-y-4">
-                                            <div class="border-b border-zinc-800 pb-3">
-                                                <span class="block text-[9px] font-bold tracking-widest text-zinc-500 uppercase mb-1">Destination</span>
+                                            <div class="border-b border-zinc-900/80 pb-3">
+                                                <span class="block text-[9px] font-bold tracking-widest text-zinc-500 uppercase mb-1">Destination Target</span>
                                                 <span class="font-medium text-white" id="driver-trip-dest">--</span>
                                             </div>
                                             <div>
-                                                <span class="block text-[9px] font-bold tracking-widest text-zinc-500 uppercase mb-1">Amount to Collect</span>
+                                                <span class="block text-[9px] font-bold tracking-widest text-zinc-500 uppercase mb-1">Guaranteed Financial Collection</span>
                                                 <span class="font-mono text-green-400 text-2xl" id="driver-trip-fare">--</span>
                                             </div>
                                         </div>
                                     </div>
                                     <div class="flex flex-col gap-3 w-full max-w-sm mx-auto">
-                                        <a href="#" id="btn-call-passenger" class="w-full bg-zinc-800 text-white text-sm font-medium py-3.5 rounded-xl text-center border border-zinc-700 active:scale-[0.98] transition"><i class="fas fa-phone mr-2"></i> Contact Passenger</a>
-                                        <button onclick="AppControllers.handleCompleteRide()" id="btn-complete" class="w-full bg-white text-black text-sm font-bold py-3.5 rounded-xl transition active:scale-[0.98]">Complete Ride</button>
+                                        <a href="#" id="btn-call-passenger" class="w-full bg-zinc-900 text-white text-sm font-medium py-3.5 rounded-xl text-center border border-zinc-800 active:scale-[0.98] transition"><i class="fas fa-phone mr-2"></i> Voice Comm Link</a>
+                                        <button onclick="AppControllers.handleCompleteRide()" id="btn-complete" class="w-full bg-white text-black text-sm font-bold py-3.5 rounded-xl transition active:scale-[0.98]">Mark Manifest Completed</button>
                                     </div>
                                 </div>
                             </div>
@@ -272,62 +291,77 @@
                     </div>
                 </section>
 
+                <!-- SYSTEM OVERRIDE / ADMIN TAB -->
                 <section id="admin-tab" class="view-section hide w-full max-w-6xl mx-auto fade-in pt-4">
                     
-                    <div id="admin-login-view" class="max-w-md mx-auto bg-zinc-900/40 backdrop-blur-xl border border-zinc-800/40 p-8 sm:p-10 rounded-[2rem] mt-10">
-                        <div class="text-center mb-8"><div class="w-16 h-16 bg-zinc-950 border border-zinc-800 text-white rounded-full flex items-center justify-center mx-auto mb-4 text-xl"><i class="fas fa-lock"></i></div><h2 class="text-xl font-light text-white tracking-widest uppercase">Admin Login</h2></div>
-                        <input type="password" id="admin-pin" placeholder="Enter Security Code" class="w-full bg-zinc-950/60 border border-zinc-800/60 rounded-xl p-4 text-center text-xl tracking-[0.5em] text-white mb-6 focus:outline-none focus:border-white/30 transition-all font-mono">
-                        <button onclick="AppControllers.handleAdminLogin()" id="btn-login" class="w-full bg-white text-black text-sm font-bold py-4 rounded-xl active:scale-[0.98] transition">Sign In</button>
+                    <!-- Admin Guard View -->
+                    <div id="admin-login-view" class="max-w-md mx-auto glass-panel p-8 sm:p-10 rounded-[2rem] mt-10">
+                        <div class="text-center mb-8">
+                            <div class="w-16 h-16 bg-zinc-950 border border-zinc-800 text-white rounded-full flex items-center justify-center mx-auto mb-4 text-xl"><i class="fas fa-shield-halved"></i></div>
+                            <h2 class="text-sm font-bold text-white tracking-widest uppercase">System Core Override</h2>
+                        </div>
+                        <input type="password" id="admin-pin" placeholder="••••" class="w-full bg-zinc-950 border border-zinc-800/80 rounded-xl p-4 text-center text-xl tracking-[0.5em] text-white mb-6 focus:outline-none focus:border-zinc-700 transition-all font-mono">
+                        <button onclick="AppControllers.handleAdminLogin()" id="btn-login" class="w-full bg-white text-black text-sm font-bold py-4 rounded-xl active:scale-[0.98] transition">Verify Credentials</button>
                     </div>
 
+                    <!-- Admin Operational Console Dashboard -->
                     <div id="admin-dashboard-view" class="hide fade-in">
-                        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 bg-zinc-900/40 backdrop-blur-xl p-6 rounded-[2rem] border border-zinc-800/40 gap-4">
-                            <h2 class="text-2xl font-light text-white">Operations <span class="font-medium">Dashboard</span></h2>
+                        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 glass-panel p-6 rounded-[2rem] gap-4">
+                            <h2 class="text-2xl font-light text-white">Operations <span class="font-medium text-amber-500">Telemetry</span></h2>
                             <div class="flex gap-3">
-                                <button onclick="AppControllers.refreshData().then(() => AppUI.renderAdmin())" class="text-zinc-400 hover:text-white text-sm font-medium transition"><i class="fas fa-rotate mr-1"></i> Refresh</button>
-                                <button onclick="AppControllers.handleAdminLogout()" class="text-red-400 hover:text-red-300 text-sm font-medium transition ml-2 border-l border-zinc-700 pl-4"><i class="fas fa-lock mr-1"></i> Lock</button>
+                                <button onclick="AppControllers.refreshData().then(() => AppUI.renderAdmin())" class="text-zinc-400 hover:text-white text-sm font-medium transition"><i class="fas fa-rotate mr-1"></i> Global Sync</button>
+                                <button onclick="AppControllers.handleAdminLogout()" class="text-red-400 hover:text-red-300 text-sm font-medium transition ml-2 border-l border-zinc-800 pl-4"><i class="fas fa-lock mr-1"></i> Lock System</button>
                             </div>
                         </div>
                         
                         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                             
-                            <div class="bg-zinc-900/40 backdrop-blur-xl border border-zinc-800/40 p-6 rounded-[2rem] lg:col-span-3">
-                                <h3 class="text-[10px] font-bold tracking-widest text-zinc-500 uppercase mb-4">Send Announcement</h3>
+                            <!-- System Broadcast Matrix -->
+                            <div class="glass-panel p-6 rounded-[2rem] lg:col-span-3">
+                                <h3 class="text-[10px] font-bold tracking-widest text-zinc-500 uppercase mb-4">Network-Wide Broadcast Core</h3>
                                 <div class="flex gap-2">
-                                    <input type="text" id="admin-broadcast-msg" class="w-full bg-zinc-950/60 rounded-xl p-3.5 text-sm border border-zinc-800/60 text-white focus:outline-none" placeholder="Type a message to all active drivers...">
-                                    <button onclick="AppControllers.handleUpdateBroadcast()" class="bg-white text-black px-6 rounded-xl text-sm font-bold hover:bg-zinc-200 transition">Broadcast</button>
+                                    <input type="text" id="admin-broadcast-msg" class="w-full bg-zinc-950 border border-zinc-800 rounded-xl p-3.5 text-sm text-white focus:outline-none" placeholder="Transmit administrative text overlay across all user screens...">
+                                    <button onclick="AppControllers.handleUpdateBroadcast()" class="bg-white text-black px-6 rounded-xl text-sm font-bold hover:bg-zinc-200 transition shrink-0">Broadcast</button>
                                 </div>
                             </div>
 
-                            <div class="bg-zinc-900/40 backdrop-blur-xl border border-zinc-800/40 p-6 rounded-[2rem] lg:col-span-3 overflow-hidden">
-                                <h3 class="text-[10px] font-bold tracking-widest text-zinc-500 uppercase mb-4">Drivers & Accounts</h3>
-                                <div class="overflow-x-auto no-scrollbar">
+                            <!-- Fleet Registry Table -->
+                            <div class="glass-panel p-6 rounded-[2rem] lg:col-span-3 overflow-hidden">
+                                <h3 class="text-[10px] font-bold tracking-widest text-zinc-500 uppercase mb-4">Core Fleet Ledger & Approval Desk</h3>
+                                <div class="overflow-x-auto">
                                     <table class="min-w-full text-left text-sm whitespace-nowrap">
-                                        <thead class="bg-zinc-950/40 text-[9px] font-bold tracking-widest text-zinc-500 uppercase border-b border-zinc-800">
-                                            <tr><th class="px-4 py-3">Profile</th><th class="px-4 py-3">Vehicle / Location</th><th class="px-4 py-3">Status</th><th class="px-4 py-3">Account Balance</th></tr>
+                                        <thead class="bg-zinc-950 text-[9px] font-bold tracking-widest text-zinc-500 uppercase border-b border-zinc-900">
+                                            <tr>
+                                                <th class="px-4 py-3">Pilot Entity</th>
+                                                <th class="px-4 py-3">Asset Matrix</th>
+                                                <th class="px-4 py-3">Clearance Access</th>
+                                                <th class="px-4 py-3">Ledger Liquidity</th>
+                                            </tr>
                                         </thead>
-                                        <tbody id="admin-fleet-list" class="divide-y divide-zinc-800/50"></tbody>
+                                        <tbody id="admin-fleet-list" class="divide-y divide-zinc-900"></tbody>
                                     </table>
                                 </div>
                             </div>
 
-                            <div class="bg-zinc-900/40 backdrop-blur-xl border border-zinc-800/40 p-6 rounded-[2rem] lg:col-span-1">
-                                <h3 class="text-[10px] font-bold tracking-widest text-zinc-500 uppercase mb-4">Pickup Locations</h3>
-                                <form onsubmit="AppControllers.handleCreateRank(event)" class="flex flex-col gap-2 mb-6 bg-zinc-950/40 p-4 rounded-xl border border-zinc-800/50">
-                                    <input type="text" id="admin-rank-name" required placeholder="Location Name" class="w-full bg-zinc-900 border border-zinc-800 rounded-lg p-2.5 text-xs text-white focus:outline-none">
-                                    <input type="number" id="admin-rank-fee" required placeholder="Base Fare (ZMW)" class="w-full bg-zinc-900 border border-zinc-800 rounded-lg p-2.5 text-xs text-white focus:outline-none">
+                            <!-- Station/Terminal Infrastructure Configurator -->
+                            <div class="glass-panel p-6 rounded-[2rem] lg:col-span-1">
+                                <h3 class="text-[10px] font-bold tracking-widest text-zinc-500 uppercase mb-4">Terminal Stations</h3>
+                                <form onsubmit="AppControllers.handleCreateRank(event)" class="flex flex-col gap-2 mb-6 bg-zinc-950 border border-zinc-900 p-4 rounded-xl">
+                                    <input type="text" id="admin-rank-name" required placeholder="Station Terminal ID" class="w-full bg-zinc-900 border border-zinc-800 rounded-lg p-2.5 text-xs text-white focus:outline-none">
+                                    <input type="number" id="admin-rank-fee" required placeholder="Base Fee Amount (ZMW)" class="w-full bg-zinc-900 border border-zinc-800 rounded-lg p-2.5 text-xs text-white focus:outline-none">
                                     <div class="flex gap-2">
-                                        <input type="text" id="admin-rank-coords" readonly placeholder="GPS Coordinates" class="w-full bg-zinc-900/50 border border-zinc-800 rounded-lg p-2.5 text-xs text-zinc-500 font-mono focus:outline-none">
+                                        <input type="text" id="admin-rank-coords" readonly placeholder="Terminal Coordinates" class="w-full bg-zinc-900/50 border border-zinc-800 rounded-lg p-2.5 text-xs text-zinc-500 font-mono focus:outline-none">
                                         <button type="button" onclick="AppControllers.handleCaptureRankCoords()" id="btn-capture-gps" class="bg-zinc-800 text-white px-3 rounded-lg text-xs hover:bg-zinc-700 transition shrink-0 border border-zinc-700"><i class="fas fa-crosshairs"></i></button>
                                     </div>
-                                    <button type="submit" id="btn-add-rank" class="w-full bg-white text-black py-2.5 rounded-lg text-xs font-bold mt-2 hover:bg-zinc-200 transition">Save Location</button>
+                                    <button type="submit" id="btn-add-rank" class="w-full bg-white text-black py-2.5 rounded-lg text-xs font-bold mt-2 hover:bg-zinc-200 transition">Deploy Station</button>
                                 </form>
-                                <ul id="admin-rank-list" class="space-y-2 max-h-48 overflow-y-auto no-scrollbar"></ul>
+                                <ul id="admin-rank-list" class="space-y-2 max-h-48 overflow-y-auto"></ul>
                             </div>
 
-                            <div class="bg-zinc-900/40 backdrop-blur-xl border border-zinc-800/40 p-6 rounded-[2rem] lg:col-span-2">
-                                <h3 class="text-[10px] font-bold tracking-widest text-zinc-500 uppercase mb-4 flex items-center"><span class="w-2 h-2 rounded-full bg-amber-500 mr-2"></span> Driver Waiting List</h3>
-                                <div id="admin-queue-view" class="grid grid-cols-1 md:grid-cols-2 gap-4 max-h-[300px] overflow-y-auto no-scrollbar"></div>
+                            <!-- Real-Time Queuing Monitor -->
+                            <div class="glass-panel p-6 rounded-[2rem] lg:col-span-2">
+                                <h3 class="text-[10px] font-bold tracking-widest text-zinc-500 uppercase mb-4 flex items-center"><span class="w-2 h-2 rounded-full bg-amber-500 mr-2 animate-pulse"></span> Terminal Dispatch Pipelines</h3>
+                                <div id="admin-queue-view" class="grid grid-cols-1 md:grid-cols-2 gap-4 max-h-[320px] overflow-y-auto"></div>
                             </div>
                         </div>
                     </div>
@@ -336,54 +370,24 @@
         </main>
     </div>
 
-    <nav class="md:hidden fixed bottom-0 w-full bg-black/80 backdrop-blur-xl border-t border-zinc-900 flex justify-around items-center h-[72px] pb-safe z-50">
+    <!-- Mobile Screen Interface Navigation Dock -->
+    <nav class="md:hidden fixed bottom-0 w-full bg-black/90 backdrop-blur-2xl border-t border-zinc-900 flex justify-around items-center h-[76px] pb-safe z-50">
         <button onclick="AppUI.switchTab('passenger-tab')" id="mob-passenger-tab" class="bottom-nav-item active flex flex-col items-center justify-center w-full h-full"><i class="fas fa-location-arrow text-lg mb-1.5"></i><span class="text-[9px] font-bold tracking-widest uppercase">Request</span></button>
-        <button onclick="AppUI.switchTab('driver-tab')" id="mob-driver-tab" class="bottom-nav-item flex flex-col items-center justify-center w-full h-full"><i class="fas fa-steering-wheel text-lg mb-1.5"></i><span class="text-[9px] font-bold tracking-widest uppercase">Drive</span></button>
-        <button onclick="AppUI.switchTab('admin-tab')" id="mob-admin-tab" class="bottom-nav-item flex flex-col items-center justify-center w-full h-full"><i class="fas fa-fingerprint text-lg mb-1.5"></i><span class="text-[9px] font-bold tracking-widest uppercase">System</span></button>
+        <button onclick="AppUI.switchTab('driver-tab')" id="mob-driver-tab" class="bottom-nav-item flex flex-col items-center justify-center w-full h-full"><i class="fas fa-car text-lg mb-1.5"></i><span class="text-[9px] font-bold tracking-widest uppercase">Portal</span></button>
+        <button onclick="AppUI.switchTab('admin-tab')" id="mob-admin-tab" class="bottom-nav-item flex flex-col items-center justify-center w-full h-full"><i class="fas fa-sliders text-lg mb-1.5"></i><span class="text-[9px] font-bold tracking-widest uppercase">System</span></button>
     </nav>
 
 <script>
 /**
- * PREMIUM TOAST NOTIFICATION SYSTEM
- */
-function showToast(message, type = 'success') {
-    const container = document.getElementById('toast-container');
-    const toast = document.createElement('div');
-    
-    const bgClass = type === 'success' ? 'bg-zinc-800/95' : 'bg-red-950/95';
-    const textClass = type === 'success' ? 'text-white' : 'text-red-100';
-    const borderClass = type === 'success' ? 'border-white/10' : 'border-red-500/20';
-    const icon = type === 'success' 
-        ? '<svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>'
-        : '<svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M6 18L18 6M6 6l12 12"></path></svg>';
-
-    toast.className = `flex items-center gap-3 px-5 py-4 rounded-2xl shadow-2xl backdrop-blur-xl border ${borderClass} ${bgClass} ${textClass} text-sm font-medium transition-all duration-500 opacity-0 translate-y-[-1rem]`;
-    toast.innerHTML = `<div class="flex items-center justify-center w-6 h-6 rounded-full bg-white/10 shrink-0">${icon}</div><span>${message}</span>`;
-
-    container.appendChild(toast);
-
-    requestAnimationFrame(() => {
-        toast.classList.remove('opacity-0', 'translate-y-[-1rem]');
-        toast.classList.add('opacity-100', 'translate-y-0');
-    });
-
-    setTimeout(() => {
-        toast.classList.remove('opacity-100', 'translate-y-0');
-        toast.classList.add('opacity-0', 'translate-y-[-1rem]');
-        setTimeout(() => toast.remove(), 500);
-    }, 3500);
-}
-
-/**
- * VYETA MOBILITY FRONTEND APP v7.1 (PREMIUM DARK MODE)
+ * CORE INTERFACE ENGINE v7.2 - DEPLOYMENT READY
  */
 
 const API_URL = "https://script.google.com/macros/s/AKfycbz1V1akzH_-f-qIkCX-WJQFa-zUvoE4q5QvasMGCQwTNAf-ohbxCttbYLIqG4lly_VL/exec"; 
 
 const DriverSession = {
-    save: (d) => { localStorage.setItem('zt_sess', JSON.stringify(d)); currentDriverSession = d; },
-    get: () => { const t = localStorage.getItem('zt_sess'); return t ? JSON.parse(t) : null; },
-    clear: () => { localStorage.removeItem('zt_sess'); currentDriverSession = null; }
+    save: (d) => { localStorage.setItem('v_mobility_sess', JSON.stringify(d)); currentDriverSession = d; },
+    get: () => { const t = localStorage.getItem('v_mobility_sess'); return t ? JSON.parse(t) : null; },
+    clear: () => { localStorage.removeItem('v_mobility_sess'); currentDriverSession = null; }
 };
 
 const APIService = {
@@ -401,13 +405,18 @@ const APIService = {
     }
 };
 
-const convertFileToBase64 = (f) => new Promise((res, rej) => { const r = new FileReader(); r.readAsDataURL(f); r.onload = () => res(r.result.split(',')[1]); r.onerror = e => rej(e); });
+const convertFileToBase64 = (f) => new Promise((res, rej) => { 
+    const r = new FileReader(); 
+    r.readAsDataURL(f); 
+    r.onload = () => res(r.result.split(',')[1]); 
+    r.onerror = e => rej(e); 
+});
 
 const getGeoLocation = () => new Promise((resolve, reject) => {
-    if (!navigator.geolocation) return reject(new Error("Location services not available."));
+    if (!navigator.geolocation) return reject(new Error("Location core not active."));
     navigator.geolocation.getCurrentPosition(
         pos => resolve({ lat: pos.coords.latitude, lng: pos.coords.longitude }),
-        err => reject(new Error("GPS Access Denied."))
+        err => reject(new Error("GPS Signal Failure."))
     );
 });
 
@@ -420,8 +429,9 @@ const AppControllers = {
     refreshData: async () => {
         try { 
             systemData = await APIService.get('getAllData'); 
-            AppUI.populateRankDropdowns(); AppUI.renderBanner();
-        } catch(e) { console.warn("Background sync paused."); }
+            AppUI.populateRankDropdowns(); 
+            AppUI.renderBanner();
+        } catch(e) { console.warn("Background ingestion cycle paused."); }
     },
     startPolling: () => {
         if(pollingInterval) clearInterval(pollingInterval);
@@ -429,7 +439,7 @@ const AppControllers = {
             await AppControllers.refreshData();
             if(!document.getElementById('driver-tab').classList.contains('hide')) AppUI.renderDriverView();
             if(!document.getElementById('passenger-tab').classList.contains('hide') && !document.getElementById('passenger-status-area').classList.contains('hide')) AppUI.renderPassengerWaitingView();
-        }, 6000); 
+        }, 5000); 
     },
     updateFareEstimate: () => {
         try {
@@ -437,14 +447,15 @@ const AppControllers = {
             const rank = systemData.ranks.find(r => r.id === rankId);
             const dist = parseFloat(document.getElementById('pass-distance').value) || 0;
             const baseFee = rank ? parseFloat(rank.baseFee) : 0;
-            const total = baseFee + (dist * 2.5);
+            const total = baseFee + (dist * 2.5); // Localized predictable flat metric
             document.getElementById('pass-fare-estimate').innerHTML = `ZMW <span class="font-medium text-amber-400">${total.toFixed(2)}</span>`;
         } catch(e) {}
     },
     handleRideRequest: async (e) => {
         e.preventDefault();
         const btn = document.getElementById('btn-request-ride');
-        btn.innerHTML = `<i class="fas fa-spinner fa-spin mr-2"></i> Processing...`; btn.disabled = true;
+        btn.innerHTML = `<i class="fas fa-spinner fa-spin mr-2"></i> Deploying Request...`; 
+        btn.disabled = true;
 
         try {
             const rankId = document.getElementById('pass-rank-select').value;
@@ -460,8 +471,8 @@ const AppControllers = {
             document.getElementById('passenger-status-area').classList.remove('hide');
             AppControllers.startPolling(); 
         } catch (err) {
-            showToast(err.message || "No drivers available in this area.", 'error');
-            btn.innerHTML = `Confirm Booking`; btn.disabled = false;
+            alert(err.message || "Pipeline full. No active fleet assets in this sector terminal.");
+            btn.innerHTML = `Broadcast Transit Request`; btn.disabled = false;
         }
     },
     handleDriverRegister: async () => {
@@ -473,27 +484,24 @@ const AppControllers = {
         const rankId = document.getElementById('driver-rank-select-reg').value;
         const fileRef = document.getElementById('driver-photo');
 
-        if (!name || !phone || !email || !reg || !rankId || !fileRef.files.length) {
-            return showToast("Please fill out all fields.", 'error');
-        }
-        
-        const btn = document.getElementById('btn-register'); btn.innerText = "Submitting..."; btn.disabled = true;
+        if (!name || !phone || !email || !reg || !rankId || !fileRef.files.length) return alert("Incomplete onboarding parameters.");
+        const btn = document.getElementById('btn-register'); 
+        btn.innerText = "Transmitting Packet..."; btn.disabled = true;
 
         try {
             const photo64 = await convertFileToBase64(fileRef.files[0]);
             const res = await APIService.post('registerDriver', { name: `${name}||${phone}`, email, licenseNumber: license, vehicleReg: reg, rankId, photoBase64: photo64, photoMimeType: fileRef.files[0].type });
             DriverSession.save(res);
-            showToast("Account created. Pending admin approval.");
-            await AppControllers.refreshData(); AppUI.renderDriverView();
-        } catch(e) { 
-            showToast("Failed to submit application.", 'error'); 
-            btn.innerText = "Create Account"; btn.disabled = false; 
-        }
+            alert("Clearance requested. Terminal operational status pending evaluation.");
+            await AppControllers.refreshData(); 
+            AppUI.renderDriverView();
+        } catch(e) { alert("Transmission sequence failed."); btn.innerText = "Submit Clearance Protocol"; btn.disabled = false; }
     },
     handleDriverLogin: async () => {
         const phone = document.getElementById('login-phone').value.trim();
         if(!phone) return;
-        const btn = document.getElementById('btn-login-driver'); btn.innerText = "Signing in..."; btn.disabled = true;
+        const btn = document.getElementById('btn-login-driver'); 
+        btn.innerText = "Connecting Link..."; btn.disabled = true;
         
         await AppControllers.refreshData();
         const match = systemData.drivers.find(d => d.name && d.name.includes(`||${phone}`));
@@ -501,39 +509,39 @@ const AppControllers = {
             DriverSession.save(match); 
             AppUI.renderDriverView(); 
             AppControllers.startPolling(); 
-            showToast("Signed in successfully.");
-        } 
-        else {
-            showToast("Account not found.", 'error');
+        } else {
+            alert("Asset signature unrecognized in network registry.");
         }
-        
-        btn.innerText = "Sign In"; btn.disabled = false;
+        btn.innerText = "Access Network"; btn.disabled = false;
     },
-    handleDriverLogout: () => { DriverSession.clear(); if(pollingInterval) clearInterval(pollingInterval); AppUI.renderDriverView(); showToast("Signed out."); },
+    handleDriverLogout: () => { 
+        DriverSession.clear(); 
+        if(pollingInterval) clearInterval(pollingInterval); 
+        AppUI.renderDriverView(); 
+    },
     handleToggleAvailability: async () => {
         if(!currentDriverSession) return;
-        const btn = document.getElementById('btn-toggle-status'); btn.disabled = true; btn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> Loading...`;
+        const btn = document.getElementById('btn-toggle-status'); 
+        btn.disabled = true; btn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> Processing...`;
         try {
             if (currentDriverSession.state === 'offline' || currentDriverSession.state === '') {
                 let coords = { lat: 0, lng: 0 };
                 try { coords = await getGeoLocation(); } catch(geoErr) {}
                 await APIService.post('joinQueue', { driverId: currentDriverSession.id, rankId: currentDriverSession.rankId, lat: coords.lat, lng: coords.lng });
-                showToast("You are now online.");
             } else {
                 await APIService.post('goOffline', { driverId: currentDriverSession.id });
-                showToast("You are now offline.");
             }
             await AppControllers.refreshDriverStatus();
-        } catch(e) { showToast(e.message, 'error'); } finally { btn.disabled = false; }
+        } catch(e) { alert(e.message); } finally { btn.disabled = false; }
     },
     handleRankChange: async () => {
         const newRankId = document.getElementById('driver-rank-select-update').value;
         if(newRankId === currentDriverSession.rankId) return;
         try {
             await APIService.post('driverChangeRank', { driverId: currentDriverSession.id, newRankId });
-            showToast("Location updated. You are now offline.");
+            alert("Sector terminal configuration shifted successfully.");
             await AppControllers.refreshDriverStatus();
-        } catch(e) { showToast("Failed to update location.", 'error'); }
+        } catch(e) {}
     },
     refreshDriverStatus: async () => {
         if (!currentDriverSession) return;
@@ -548,8 +556,7 @@ const AppControllers = {
         try {
             await APIService.post('acceptRide', { tripId: currentDriverSession.currentTripId, driverId: currentDriverSession.id });
             await AppControllers.refreshDriverStatus();
-            showToast("Ride accepted.");
-        } catch(e) { showToast("Error accepting ride.", 'error'); }
+        } catch(e) { alert("Failed to lock route manifest connection."); }
     },
     handleDeclineRide: async () => {
         if(!currentDriverSession.currentTripId) return;
@@ -562,12 +569,11 @@ const AppControllers = {
     },
     handleCompleteRide: async () => {
         if(!currentDriverSession.currentTripId) return;
-        const btn = document.getElementById('btn-complete'); btn.innerText = "Completing..."; btn.disabled = true;
+        const btn = document.getElementById('btn-complete'); btn.innerText = "Committing Ledger Sync..."; btn.disabled = true;
         try {
             await APIService.post('completeRide', { tripId: currentDriverSession.currentTripId });
             await AppControllers.refreshDriverStatus();
-            showToast("Ride completed successfully.");
-        } catch(e) { showToast("Error completing ride.", 'error'); } finally { btn.innerText = "Complete Ride"; btn.disabled = false; }
+        } catch(e) { alert("Sync validation error."); } finally { btn.innerText = "Mark Manifest Completed"; btn.disabled = false; }
     },
     handleCaptureRankCoords: async () => {
         const btn = document.getElementById('btn-capture-gps');
@@ -576,8 +582,7 @@ const AppControllers = {
         try {
             const pos = await getGeoLocation();
             input.value = `${pos.lat.toFixed(6)}, ${pos.lng.toFixed(6)}`;
-            showToast("GPS captured.");
-        } catch(e) { showToast("Could not get GPS location.", 'error'); } finally { btn.innerHTML = `<i class="fas fa-crosshairs"></i>`; }
+        } catch(e) {} finally { btn.innerHTML = `<i class="fas fa-crosshairs"></i>`; }
     },
     handleAdminTopUp: async (driverId) => {
         const amtInput = document.getElementById(`topup-${driverId}`);
@@ -587,21 +592,23 @@ const AppControllers = {
             await APIService.post('topUpWallet', { driverId, amount: value });
             amtInput.value = ''; 
             await AppControllers.refreshData(); AppUI.renderAdmin();
-            showToast("Account topped up.");
-        } catch(e) { showToast("Failed to top up account.", 'error'); }
+        } catch(e) {}
     },
     handleAdminLogin: async () => {
         const pin = document.getElementById('admin-pin');
-        const btn = document.getElementById('btn-login'); btn.innerText = "Checking..."; btn.disabled = true;
+        const btn = document.getElementById('btn-login'); btn.innerText = "Authorizing Override..."; btn.disabled = true;
         try {
             await APIService.post('verifyAdmin', { pin: pin ? pin.value : "2026" });
-            document.getElementById('admin-login-view').classList.add('hide'); document.getElementById('admin-dashboard-view').classList.remove('hide');
+            document.getElementById('admin-login-view').classList.add('hide'); 
+            document.getElementById('admin-dashboard-view').classList.remove('hide');
             if(pin) pin.value = '';
             await AppControllers.refreshData(); AppUI.renderAdmin();
-            showToast("Signed in as Admin.");
-        } catch(e) { if(pin) showToast("Incorrect Code.", 'error'); } finally { btn.innerText = "Sign In"; btn.disabled = false; }
+        } catch(e) { if(pin) alert("Security access failure. Handshake rejected."); } finally { btn.innerText = "Verify Credentials"; btn.disabled = false; }
     },
-    handleAdminLogout: () => { document.getElementById('admin-dashboard-view').classList.add('hide'); document.getElementById('admin-login-view').classList.remove('hide'); showToast("Admin locked."); },
+    handleAdminLogout: () => { 
+        document.getElementById('admin-dashboard-view').classList.add('hide'); 
+        document.getElementById('admin-login-view').classList.remove('hide'); 
+    },
     handleCreateRank: async (e) => {
         e.preventDefault();
         const coords = document.getElementById('admin-rank-coords').value.split(',');
@@ -609,18 +616,16 @@ const AppControllers = {
         const lng = coords[1] ? parseFloat(coords[1].trim()) : 0;
         await APIService.post('createRank', { name: document.getElementById('admin-rank-name').value, baseFee: document.getElementById('admin-rank-fee').value, lat, lng });
         e.target.reset(); await AppControllers.refreshData(); AppUI.renderAdmin();
-        showToast("Location saved.");
     },
     handleAdminUpdateDriver: async (id, field, selectElement) => {
         try {
             await APIService.post('adminUpdateDriver', { driverId: id, field: field, value: selectElement.value });
             await AppControllers.refreshData(); AppUI.renderAdmin();
-            showToast("Account status updated.");
-        } catch(e) { showToast("Failed to update status.", 'error'); }
+        } catch(e) {}
     },
     handleUpdateBroadcast: async () => {
         const msg = document.getElementById('admin-broadcast-msg').value;
-        try { await APIService.post('updateBroadcast', { message: msg }); document.getElementById('admin-broadcast-msg').value=''; await AppControllers.refreshData(); showToast("Announcement sent."); } catch(e) { showToast("Failed to send announcement.", 'error'); }
+        try { await APIService.post('updateBroadcast', { message: msg }); document.getElementById('admin-broadcast-msg').value=''; await AppControllers.refreshData(); } catch(e) {}
     }
 };
 
@@ -629,7 +634,7 @@ const AppUI = {
         document.querySelectorAll('.view-section').forEach(el => el.classList.add('hide'));
         document.getElementById(tabId).classList.remove('hide');
         document.querySelectorAll('.sidebar-item, .bottom-nav-item').forEach(btn => btn.classList.remove('active'));
-        if(document.getElementById(`nav-${tabId}`)) document.getElementById(`nav-${tabId}`).classList.add('active');
+        if(document.getElementById(`nav-${tabId}`)) document.getElementById(`nav-${navId = tabId}`).classList.add('active');
         if(document.getElementById(`mob-${tabId}`)) document.getElementById(`mob-${tabId}`).classList.add('active');
         
         if(tabId === 'driver-tab') {
@@ -651,8 +656,8 @@ const AppUI = {
     },
     populateRankDropdowns: () => {
         try {
-            const opts = systemData.ranks.map(r => `<option value="${r.id}" class="bg-zinc-900">${r.name}</option>`).join('');
-            document.getElementById('pass-rank-select').innerHTML = opts || `<option value="">No locations available</option>`;
+            const opts = systemData.ranks.map(r => `<option value="${r.id}" class="bg-zinc-950 text-white">${r.name}</option>`).join('');
+            document.getElementById('pass-rank-select').innerHTML = opts;
             document.getElementById('driver-rank-select-reg').innerHTML = opts;
             const updateSel = document.getElementById('driver-rank-select-update');
             if(updateSel) { updateSel.innerHTML = opts; if(currentDriverSession) updateSel.value = currentDriverSession.rankId; }
@@ -669,20 +674,20 @@ const AppUI = {
             const title = document.getElementById('pass-status-title'), desc = document.getElementById('pass-status-desc'), icon = document.getElementById('pass-loading-icon'), callBtn = document.getElementById('btn-call-driver');
 
             if(trip.status === 'offered') {
-                title.innerText = "Contacting Driver"; desc.innerText = "Awaiting confirmation.";
+                title.innerText = "Pilot Signaled"; desc.innerText = "Awaiting edge confirmation sequence...";
             } else if (trip.status === 'in_progress') {
-                title.innerText = "Driver is on the way"; desc.innerText = "Your ride is confirmed.";
+                title.innerText = "Asset Intercept Secured"; desc.innerText = "Vehicle has locked coordinates. En route.";
                 icon.className = "w-20 h-20 bg-green-500/10 border border-green-500/30 text-green-400 rounded-full flex items-center justify-center mx-auto mb-6 text-2xl shadow-[0_0_30px_rgba(34,197,94,0.15)]"; icon.innerHTML = '<i class="fas fa-check"></i>';
                 callBtn.classList.remove('pointer-events-none', 'opacity-20');
                 const driver = systemData.drivers.find(d => d.id === trip.driverId);
                 if(driver) {
                     const parts = (driver.name || "").split('||');
-                    document.getElementById('match-driver-name').innerText = parts[0] || 'Driver';
-                    document.getElementById('match-vehicle').innerText = driver.vehicleReg || 'Verified Vehicle';
+                    document.getElementById('match-driver-name').innerText = parts[0] || 'Verified Network Pilot';
+                    document.getElementById('match-vehicle').innerText = driver.vehicleReg || 'Active Registry';
                     if(parts[1]) callBtn.href = `tel:${parts[1]}`;
                 }
             } else if (trip.status === 'cancelled') {
-                title.innerText = "Ride Cancelled"; desc.innerText = "No drivers available nearby.";
+                title.innerText = "Protocol Deficit"; desc.innerText = "Network unable to secure nearby asset response.";
                 icon.className = "w-20 h-20 bg-red-500/10 border border-red-500/30 text-red-400 rounded-full flex items-center justify-center mx-auto mb-6 text-2xl"; icon.innerHTML = '<i class="fas fa-times"></i>';
             }
         } catch(e) {}
@@ -693,35 +698,38 @@ const AppUI = {
             if (!currentDriverSession) { authGate.classList.remove('hide'); dash.classList.add('hide'); return; }
             authGate.classList.add('hide'); dash.classList.remove('hide');
 
-            document.getElementById('lbl-active-driver').innerText = (currentDriverSession.name || "||").split('||')[0] || "Driver";
+            document.getElementById('lbl-active-driver').innerText = (currentDriverSession.name || "||").split('||')[0] || "Network Operator";
             document.getElementById('drv-wallet-bal').innerText = `ZMW ${parseFloat(currentDriverSession.walletBalance || 0).toFixed(2)}`;
 
             const appBadge = document.getElementById('drv-approval-badge');
-            if(currentDriverSession.approvalStatus === 'APPROVED') { appBadge.className = "text-[9px] font-bold tracking-widest px-2 py-1 rounded inline-block mb-2 border border-green-500/30 bg-green-500/10 text-green-400"; appBadge.innerText = "VERIFIED ACCOUNT"; }
-            else { appBadge.className = "text-[9px] font-bold tracking-widest px-2 py-1 rounded inline-block mb-2 border border-amber-500/30 bg-amber-500/10 text-amber-400"; appBadge.innerText = "PENDING APPROVAL"; }
+            if(currentDriverSession.approvalStatus === 'APPROVED') { 
+                appBadge.className = "text-[9px] font-bold tracking-widest px-2 py-1 rounded inline-block mb-2 border border-green-500/20 bg-green-500/10 text-green-400"; appBadge.innerText = "NETWORK VERIFIED OPERATOR"; 
+            } else { 
+                appBadge.className = "text-[9px] font-bold tracking-widest px-2 py-1 rounded inline-block mb-2 border border-amber-500/20 bg-amber-500/10 text-amber-400"; appBadge.innerText = "CLEARANCE SEQUENCE PENDING"; 
+            }
 
             const btnToggle = document.getElementById('btn-toggle-status'), badge = document.getElementById('driver-status-badge'), emptyState = document.getElementById('empty-trip-state'), activePanel = document.getElementById('active-trip-panel'), offerPanel = document.getElementById('offer-trip-panel'), posText = document.getElementById('driver-queue-pos');
 
             if(currentDriverSession.approvalStatus !== 'APPROVED' || currentDriverSession.paymentStatus === 'OVERDUE') {
-                btnToggle.disabled = true; btnToggle.className = "bg-zinc-800 text-zinc-500 px-6 py-3 rounded-xl text-sm font-bold w-full sm:w-auto cursor-not-allowed border border-zinc-700";
-                posText.innerText = "Account Restricted: Top up ledger or contact Admin.";
+                btnToggle.disabled = true; btnToggle.className = "bg-zinc-950 text-zinc-600 px-6 py-3 rounded-xl text-sm font-bold w-full sm:w-auto cursor-not-allowed border border-zinc-900";
+                posText.innerText = "System Inactive: Account requires administrative balance top-up or document verification.";
                 if(currentDriverSession.state !== 'offline') AppControllers.handleToggleAvailability(); 
             } else { btnToggle.disabled = false; }
 
             emptyState.classList.add('hide'); activePanel.classList.add('hide'); offerPanel.classList.add('hide');
 
             if (currentDriverSession.state === 'idle') {
-                badge.innerText = 'ONLINE / WAITING'; badge.className = 'inline-block px-3 py-1 rounded text-[10px] font-bold tracking-widest border border-green-500/30 bg-green-500/10 text-green-400';
-                btnToggle.innerHTML = '<i class="fas fa-power-off mr-2"></i> Go Offline'; btnToggle.className = "bg-red-500/10 text-red-500 border border-red-500/30 px-6 py-3 rounded-xl text-sm font-bold w-full sm:w-auto active:scale-[0.98] transition";
+                badge.innerText = 'ONLINE SYSTEM STATE: READY'; badge.className = 'inline-block px-3 py-1 rounded text-[10px] font-bold tracking-widest border border-green-500/20 bg-green-500/10 text-green-400';
+                btnToggle.innerHTML = '<i class="fas fa-power-off mr-2"></i> Suspend Shift'; btnToggle.className = "bg-red-500/10 text-red-400 border border-red-500/20 px-6 py-3 rounded-xl text-sm font-bold w-full sm:w-auto active:scale-[0.98] transition";
                 emptyState.classList.remove('hide');
                 const q = systemData.queues[currentDriverSession.rankId] || [];
                 const pos = q.indexOf(currentDriverSession.id);
-                posText.innerHTML = pos !== -1 ? `Waiting List Position: <span class="font-mono text-white text-sm ml-1">${pos + 1}</span> / ${q.length}` : 'Updating...';
+                posText.innerHTML = pos !== -1 ? `Sector Queue Priority Index: <span class="font-mono text-white text-sm ml-1">${pos + 1}</span> / ${q.length}` : 'Calibrating local node index...';
                 if(offerTimerInterval) { clearInterval(offerTimerInterval); offerTimerInterval = null; }
             } 
             else if (currentDriverSession.state === 'offered') {
-                badge.innerText = 'NEW RIDE REQUEST'; badge.className = 'inline-block px-3 py-1 rounded text-[10px] font-bold tracking-widest border border-amber-500/50 bg-amber-500/20 text-amber-400 pulse-amber';
-                btnToggle.classList.add('hide'); posText.innerText = 'Please accept or decline.';
+                badge.innerText = 'ALERT: INCOMING PASSENGER MATCH'; badge.className = 'inline-block px-3 py-1 rounded text-[10px] font-bold tracking-widest border border-amber-500/40 bg-amber-500/10 text-amber-400 pulse-amber';
+                btnToggle.classList.add('hide'); posText.innerText = 'Awaiting tactical route assignment acknowledgement.';
                 offerPanel.classList.remove('hide');
                 const trip = systemData.trips.find(t => t.id === currentDriverSession.currentTripId);
                 if(trip) {
@@ -738,8 +746,8 @@ const AppUI = {
             }
             else if (currentDriverSession.state === 'on_trip') {
                 if(offerTimerInterval) { clearInterval(offerTimerInterval); offerTimerInterval = null; }
-                badge.innerText = 'ON TRIP'; badge.className = 'inline-block px-3 py-1 rounded text-[10px] font-bold tracking-widest border border-green-500 bg-green-500 text-black';
-                btnToggle.classList.add('hide'); posText.innerText = 'Proceed to destination.';
+                badge.innerText = 'TRANSIT PROTOCOL ENGAGED'; badge.className = 'inline-block px-3 py-1 rounded text-[10px] font-bold tracking-widest border border-green-500 bg-green-500 text-black';
+                btnToggle.classList.add('hide'); posText.innerText = 'Executing manifest traversal routing metrics.';
                 activePanel.classList.remove('hide');
                 const trip = systemData.trips.find(t => t.id === currentDriverSession.currentTripId);
                 if(trip) {
@@ -750,29 +758,29 @@ const AppUI = {
                 }
             } else {
                 if(offerTimerInterval) { clearInterval(offerTimerInterval); offerTimerInterval = null; }
-                badge.innerText = 'OFFLINE'; badge.className = 'inline-block px-3 py-1 rounded text-[10px] font-bold tracking-widest border border-zinc-700 text-zinc-400';
-                btnToggle.classList.remove('hide'); btnToggle.innerHTML = '<i class="fas fa-location-arrow mr-2"></i> Go Online'; btnToggle.className = "bg-white text-black px-6 py-3 rounded-xl text-sm font-bold w-full sm:w-auto active:scale-[0.98] transition";
-                emptyState.classList.remove('hide'); document.getElementById('idle-text').innerText = "You are currently offline.";
-                if(currentDriverSession.approvalStatus === 'APPROVED' && currentDriverSession.paymentStatus !== 'OVERDUE') posText.innerText = "Go online to receive rides.";
+                badge.innerText = 'DISCONNECTED'; badge.className = 'inline-block px-3 py-1 rounded text-[10px] font-bold tracking-widest border border-zinc-800 text-zinc-500';
+                btnToggle.classList.remove('hide'); btnToggle.innerHTML = '<i class="fas fa-satellite-dish mr-2"></i> Initialize Shift Protocol'; btnToggle.className = "bg-white text-black px-6 py-3 rounded-xl text-sm font-bold w-full sm:w-auto active:scale-[0.98] transition";
+                emptyState.classList.remove('hide'); document.getElementById('idle-text').innerText = "Terminal interface currently disconnected from centralized queue distribution system.";
+                if(currentDriverSession.approvalStatus === 'APPROVED' && currentDriverSession.paymentStatus !== 'OVERDUE') posText.innerText = "Connect shift timeline parameters to initialize data flow.";
             }
         } catch (e) { }
     },
     renderAdmin: () => {
         try {
             document.getElementById('admin-fleet-list').innerHTML = systemData.drivers.map(d => {
-                const rName = systemData.ranks.find(r => r.id === d.rankId)?.name || 'Unassigned';
-                const appColor = d.approvalStatus === 'PENDING' ? 'bg-amber-500/10 text-amber-400 border-amber-500/30' : (d.approvalStatus === 'SUSPENDED' ? 'bg-red-500/10 text-red-400 border-red-500/30' : 'bg-green-500/10 text-green-400 border-green-500/30');
-                const payColor = d.paymentStatus === 'OVERDUE' ? 'bg-red-500/10 text-red-400 border-red-500/30' : 'bg-zinc-800 text-zinc-400 border-zinc-700';
-                const docBtn = d.licensePhotoUrl ? `<a href="${d.licensePhotoUrl}" target="_blank" class="text-[9px] uppercase tracking-widest bg-blue-500/10 text-blue-400 border border-blue-500/30 px-2 py-0.5 rounded mt-1 inline-block font-bold"><i class="fas fa-image"></i> Docs</a>` : '';
-                return `<tr class="border-b border-zinc-800/50"><td class="px-4 py-3"><div class="font-medium text-white">${(d.name||"||").split('||')[0]}</div><div class="text-[10px] text-zinc-500 font-mono mb-1">${d.email || 'No email'}</div>${docBtn}</td><td class="px-4 py-3 text-xs"><b class="text-white">${d.vehicleReg}</b><br><span class="text-zinc-500">${rName}</span></td><td class="px-4 py-3"><select onchange="AppControllers.handleAdminUpdateDriver('${d.id}', 'approvalStatus', this)" class="text-[10px] font-bold tracking-widest uppercase p-1.5 rounded border outline-none cursor-pointer ${appColor}"><option class="bg-zinc-900" value="PENDING" ${d.approvalStatus === 'PENDING' ? 'selected' : ''}>PENDING</option><option class="bg-zinc-900" value="APPROVED" ${d.approvalStatus === 'APPROVED' ? 'selected' : ''}>APPROVED</option><option class="bg-zinc-900" value="SUSPENDED" ${d.approvalStatus === 'SUSPENDED' ? 'selected' : ''}>SUSPENDED</option></select></td><td class="px-4 py-3 text-xs"><div class="font-mono text-white text-sm mb-1">ZMW ${parseFloat(d.walletBalance || 0).toFixed(2)} <span class="border ${payColor} px-1.5 py-0.5 rounded text-[9px] font-bold uppercase tracking-widest ml-1">${d.paymentStatus}</span></div><div class="flex items-center gap-1"><input type="number" placeholder="ZMW" id="topup-${d.id}" class="w-16 p-1.5 bg-zinc-900 border border-zinc-800 rounded text-xs text-white focus:outline-none"><button onclick="AppControllers.handleAdminTopUp('${d.id}')" class="bg-white text-black text-[9px] uppercase tracking-widest px-2 py-1.5 rounded font-bold hover:bg-zinc-200">Top Up</button></div></td></tr>`;
+                const rName = systemData.ranks.find(r => r.id === d.rankId)?.name || 'Unassigned Node';
+                const appColor = d.approvalStatus === 'PENDING' ? 'bg-amber-500/10 text-amber-400 border-amber-500/20' : (d.approvalStatus === 'SUSPENDED' ? 'bg-red-500/10 text-red-400 border-red-500/20' : 'bg-green-500/10 text-green-400 border-green-500/20');
+                const payColor = d.paymentStatus === 'OVERDUE' ? 'bg-red-500/10 text-red-400 border-red-500/20' : 'bg-zinc-900 text-zinc-500 border-zinc-800';
+                const docBtn = d.licensePhotoUrl ? `<a href="${d.licensePhotoUrl}" target="_blank" class="text-[9px] uppercase tracking-widest bg-blue-500/10 text-blue-400 border border-blue-500/20 px-2 py-1 rounded mt-1.5 inline-block font-bold"><i class="fas fa-file-invoice-with-usd mr-1"></i> Verify Docs</a>` : '';
+                return `<tr class="border-b border-zinc-900"><td class="px-4 py-3.5"><div class="font-medium text-white">${(d.name||"||").split('||')[0]}</div><div class="text-[10px] text-zinc-500 font-mono mb-1">${d.email || 'No secondary contact'}</div>${docBtn}</td><td class="px-4 py-3.5 text-xs"><b class="text-white">${d.vehicleReg}</b><br><span class="text-zinc-500 text-[11px]">${rName}</span></td><td class="px-4 py-3.5"><select onchange="AppControllers.handleAdminUpdateDriver('${d.id}', 'approvalStatus', this)" class="text-[10px] font-bold tracking-widest uppercase p-1.5 rounded border outline-none cursor-pointer ${appColor}"><option class="bg-zinc-950 text-white" value="PENDING" ${d.approvalStatus === 'PENDING' ? 'selected' : ''}>PENDING</option><option class="bg-zinc-950 text-white" value="APPROVED" ${d.approvalStatus === 'APPROVED' ? 'selected' : ''}>APPROVED</option><option class="bg-zinc-950 text-white" value="SUSPENDED" ${d.approvalStatus === 'SUSPENDED' ? 'selected' : ''}>SUSPENDED</option></select></td><td class="px-4 py-3.5 text-xs"><div class="font-mono text-white text-sm mb-1.5">ZMW ${parseFloat(d.walletBalance || 0).toFixed(2)} <span class="border ${payColor} px-1.5 py-0.5 rounded text-[9px] font-bold uppercase tracking-widest ml-1">${d.paymentStatus}</span></div><div class="flex items-center gap-1.5"><input type="number" placeholder="ZMW" id="topup-${d.id}" class="w-20 p-1.5 bg-zinc-950 border border-zinc-800 rounded text-xs text-white focus:outline-none"><button onclick="AppControllers.handleAdminTopUp('${d.id}')" class="bg-white text-black text-[9px] uppercase tracking-widest px-2.5 py-1.5 rounded font-bold hover:bg-zinc-200">Inject</button></div></td></tr>`;
             }).join('');
 
-            document.getElementById('admin-rank-list').innerHTML = systemData.ranks.map(r => `<li class="flex justify-between items-center p-2.5 bg-zinc-950/40 border border-zinc-800/50 rounded-lg text-xs font-medium text-white"><span>${r.name}</span><span class="text-[9px] tracking-widest text-zinc-500 uppercase font-bold"><i class="fas fa-check text-zinc-600 mr-1"></i> Active</span></li>`).join('');
+            document.getElementById('admin-rank-list').innerHTML = systemData.ranks.map(r => `<li class="flex justify-between items-center p-3 bg-zinc-950 border border-zinc-900 rounded-lg text-xs font-medium text-white"><span>${r.name}</span><span class="text-[9px] tracking-widest text-zinc-500 uppercase font-bold"><i class="fas fa-lock text-zinc-700 mr-1"></i> Active Matrix</span></li>`).join('');
 
             document.getElementById('admin-queue-view').innerHTML = systemData.ranks.map(r => {
                 const qList = systemData.queues[r.id] || [];
-                const drvs = qList.map((dId, i) => `<div class="text-[10px] uppercase font-bold tracking-widest bg-zinc-950 border border-zinc-800 p-2 mb-1 rounded flex items-center gap-3 text-zinc-300"><span class="bg-zinc-800 text-white w-5 h-5 flex justify-center items-center rounded-sm font-mono text-xs">${i+1}</span> ${(systemData.drivers.find(x=>x.id===dId)?.name||"||").split('||')[0] || 'Driver'}</div>`).join('');
-                return `<div class="bg-zinc-950/40 p-4 rounded-xl border border-zinc-800/50"><div class="text-xs font-bold tracking-widest uppercase text-zinc-400 mb-3 flex justify-between items-center">${r.name} <span class="bg-zinc-800 text-white text-[9px] px-2 py-1 rounded font-mono">${qList.length} Waiting</span></div><div class="min-h-[50px]">${drvs || '<div class="text-xs text-zinc-600 text-center py-4 italic">No drivers</div>'}</div></div>`;
+                const drvs = qList.map((dId, i) => `<div class="text-[10px] uppercase font-bold tracking-widest bg-zinc-950 border border-zinc-900 p-2 mb-1 rounded flex items-center gap-3 text-zinc-300"><span class="bg-zinc-900 text-white w-5 h-5 flex justify-center items-center rounded-sm font-mono text-xs">${i+1}</span> ${(systemData.drivers.find(x=>x.id===dId)?.name||"||").split('||')[0] || 'Asset ID'}</div>`).join('');
+                return `<div class="bg-zinc-950/20 p-4 rounded-xl border border-zinc-900"><div class="text-xs font-bold tracking-widest uppercase text-zinc-400 mb-3 flex justify-between items-center">${r.name} <span class="bg-zinc-900 text-white text-[9px] px-2 py-1 rounded font-mono">${qList.length} Stationed</span></div><div class="min-h-[50px]">${drvs || '<div class="text-xs text-zinc-700 text-center py-4 italic">No Active Elements In Sector</div>'}</div></div>`;
             }).join('');
         } catch(e) {}
     }
