@@ -346,16 +346,20 @@
                                     <input type="text" id="rental-location" placeholder="Where should we bring the car?" required class="figma-input w-full rounded-xl px-4 py-3 text-sm text-white placeholder-zinc-700">
                                 </div>
 
-                                <div class="grid grid-cols-2 gap-3">
-                                    <div>
-                                        <label class="block text-[10px] font-bold text-zinc-500 uppercase tracking-widest mb-1.5 pl-0.5">Your Name</label>
-                                        <input type="text" id="rental-name" placeholder="Full name" required class="figma-input w-full rounded-xl px-4 py-3 text-sm text-white placeholder-zinc-700">
-                                    </div>
-                                    <div>
-                                        <label class="block text-[10px] font-bold text-zinc-500 uppercase tracking-widest mb-1.5 pl-0.5">Phone Number</label>
-                                        <input type="tel" id="rental-phone" placeholder="Phone number" required class="figma-input w-full rounded-xl px-4 py-3 text-sm text-white placeholder-zinc-700">
-                                    </div>
-                                </div>
+                               <div class="grid grid-cols-2 gap-3 mb-3">
+    <div>
+        <label class="block text-[10px] font-bold text-zinc-500 uppercase tracking-widest mb-1.5 pl-0.5">Your Name</label>
+        <input type="text" id="rental-name" placeholder="Full name" required class="figma-input w-full rounded-xl px-4 py-3 text-sm text-white placeholder-zinc-700">
+    </div>
+    <div>
+        <label class="block text-[10px] font-bold text-zinc-500 uppercase tracking-widest mb-1.5 pl-0.5">Phone Number</label>
+        <input type="tel" id="rental-phone" placeholder="Phone number" required class="figma-input w-full rounded-xl px-4 py-3 text-sm text-white placeholder-zinc-700">
+    </div>
+</div>
+<div>
+    <label class="block text-[10px] font-bold text-zinc-500 uppercase tracking-widest mb-1.5 pl-0.5">Email Address</label>
+    <input type="email" id="rental-email" placeholder="For booking confirmation" required class="figma-input w-full rounded-xl px-4 py-3 text-sm text-white placeholder-zinc-700">
+</div>
 
                                 <div class="bg-black/40 border border-white/5 rounded-xl p-4 flex justify-between items-center shadow-inner-light">
                                     <div>
@@ -684,28 +688,46 @@ const AppControllers = {
         const total = days * (selectedCarRate + driverSurcharge);
         document.getElementById('rental-total-estimate').innerHTML = `ZMW <span class="font-medium text-brand-400">${total.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>`;
     },
-    handleRentalSubmit: () => {
+   handleRentalSubmit: async () => {
         const name = document.getElementById('rental-name').value;
         const phone = document.getElementById('rental-phone').value;
+        const email = document.getElementById('rental-email').value; // Now capturing email
         const locationStr = document.getElementById('rental-location').value;
         const car = document.getElementById('rental-car-type').value;
         const days = document.getElementById('rental-days').value;
-        const mode = document.getElementById('rental-driver-option').value === 'chauffeur' ? 'with a Chauffeur' : 'Self-drive';
+        const mode = document.getElementById('rental-driver-option').value === 'chauffeur' ? 'With Chauffeur' : 'Self-drive';
 
-        if (!name || !phone || !locationStr) {
-            alert("Please fill in your contact and delivery location details.");
+        // Extract raw number from the UI
+        const totalText = document.getElementById('rental-total-estimate').innerText;
+        const total = parseFloat(totalText.replace('ZMW', '').replace(/,/g, '').trim());
+
+        if (!name || !phone || !email || !locationStr) {
+            alert("Please fill in your contact, email, and delivery location details.");
             return;
         }
 
         const btn = document.getElementById('btn-submit-rental');
-        btn.innerText = "Processing Booking...";
+        btn.innerHTML = `<i class="fas fa-spinner fa-spin mr-2"></i> Processing...`;
         btn.disabled = true;
 
-        setTimeout(() => {
-            alert(`Thank you, ${name}. Your rental request for a ${car} (${days} Days, ${mode}) has been received. Our team will call you back on ${phone} shortly to coordinate drop-off.`);
-            btn.innerText = "Book Rental";
+        try {
+            await APIService.post('requestRental', { 
+                name, phone, email, location: locationStr, car, days, mode, total 
+            });
+            
+            alert(`Thank you, ${name}. Your request has been sent! Please check ${email} for your confirmation receipt.`);
+            
+            // Clear form after success
+            document.getElementById('rental-name').value = '';
+            document.getElementById('rental-phone').value = '';
+            document.getElementById('rental-email').value = '';
+            document.getElementById('rental-location').value = '';
+        } catch(e) {
+            alert("There was an error submitting your request. Please check your connection and try again.");
+        } finally {
+            btn.innerHTML = "Book Rental";
             btn.disabled = false;
-        }, 1200);
+        }
     },
     handleRideRequest: async (e) => {
         e.preventDefault();
