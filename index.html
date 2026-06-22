@@ -528,19 +528,43 @@
         <button onclick="window.AppUI.switchTab('admin-tab')" id="mob-admin-tab" class="mob-nav-item text-zinc-500 flex flex-col items-center justify-center w-full h-full"><i class="fas fa-sliders-h text-sm mb-1"></i><span class="text-[9px] font-bold tracking-widest uppercase">Admin</span></button>
     </nav>
 
-<script>
 /**
- * VYETA MOBILITY PLATFORM - SUPABASE MIGRATION
+ * VYETA MOBILITY PLATFORM - SUPABASE MIGRATION (FIXED)
  */
 
+// 1. Initialize Namespaces first (so buttons don't break)
+window.AppUI = window.AppUI || {};
+window.AppControllers = window.AppControllers || {};
+
+// 2. Initialize Supabase safely with a redeclaration guard
 const SUPABASE_URL = "https://tnlkwdrpmwyxgvcyygzk.supabase.co"; 
 const SUPABASE_ANON_KEY = "sb_publishable_96McnURV3c3BSoq6Tq-8jw_Dwow57DG";
-const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+let supabase;
+try {
+    // Check if the client is already initialized to avoid "Identifier already declared"
+    if (!window.supabaseClient) {
+        window.supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    }
+    supabase = window.supabaseClient;
+} catch (e) {
+    console.error("Supabase init error:", e);
+}
 
 const DriverSession = {
-    save: (d) => { 
-        try { localStorage.setItem('vmn_sess', JSON.stringify(d)); currentDriverSession = d; } catch(e){} 
+    save: (d) => { try { localStorage.setItem('vmn_sess', JSON.stringify(d)); currentDriverSession = d; } catch(e){} },
+    get: () => { 
+        try { 
+            const t = localStorage.getItem('vmn_sess'); 
+            return t ? JSON.parse(t) : null; 
+        } catch(e) { return null; } 
     },
+    clear: () => { try { localStorage.removeItem('vmn_sess'); currentDriverSession = null; } catch(e){} }
+};
+
+// ... (KEEP THE REST OF THE FUNCTIONS IDENTICAL TO YOUR PREVIOUS FILE) ...
+// Ensure you keep all the functions (AppControllers, AppUI) that follow this block.
+// ...
     get: () => { 
         try { 
             const t = localStorage.getItem('vmn_sess'); 
