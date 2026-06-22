@@ -8,6 +8,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
     <script>
         tailwind.config = {
             theme: { 
@@ -35,85 +37,46 @@
         }
     </script>
     <style>
-        :root {
-            --bg-canvas: #09090b;
-        }
+        :root { --bg-canvas: #09090b; }
         body, html { 
-            background-color: var(--bg-canvas); 
-            color: #fafafa; 
-            -webkit-tap-highlight-color: transparent; 
-            margin: 0;
-            padding: 0;
-            overflow: hidden; /* Prevent double scrollbars on the document root */
+            background-color: var(--bg-canvas); color: #fafafa; 
+            -webkit-tap-highlight-color: transparent; margin: 0; padding: 0; overflow: hidden; 
         }
-        
         ::-webkit-scrollbar { width: 0px; height: 0px; }
         
         .figma-panel {
             background: linear-gradient(145deg, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0.01) 100%);
-            backdrop-filter: blur(40px);
-            -webkit-backdrop-filter: blur(40px);
+            backdrop-filter: blur(40px); -webkit-backdrop-filter: blur(40px);
             border: 1px solid rgba(255,255,255,0.06);
             box-shadow: var(--tw-shadow-figma), inset 0 1px 0 rgba(255,255,255,0.03);
         }
-
         .figma-input {
-            background: rgba(0,0,0,0.3);
-            border: 1px solid rgba(255,255,255,0.06);
-            box-shadow: inset 0 2px 4px rgba(0,0,0,0.3);
-            transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+            background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.06);
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.3); transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
         }
         .figma-input:focus {
-            background: rgba(255,255,255,0.02);
-            border-color: rgba(245, 158, 11, 0.35);
-            box-shadow: 0 0 0 4px rgba(245, 158, 11, 0.08), inset 0 2px 4px rgba(0,0,0,0.1);
-            outline: none;
+            background: rgba(255,255,255,0.02); border-color: rgba(245, 158, 11, 0.35);
+            box-shadow: 0 0 0 4px rgba(245, 158, 11, 0.08), inset 0 2px 4px rgba(0,0,0,0.1); outline: none;
         }
-
         .figma-btn-primary {
-            background: linear-gradient(180deg, #ffffff 0%, #f4f4f5 100%);
-            color: #09090b;
-            box-shadow: 0 1px 2px rgba(255,255,255,0.8) inset, 0 4px 16px rgba(255,255,255,0.05);
-            transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+            background: linear-gradient(180deg, #ffffff 0%, #f4f4f5 100%); color: #09090b;
+            box-shadow: 0 1px 2px rgba(255,255,255,0.8) inset, 0 4px 16px rgba(255,255,255,0.05); transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
         }
-        .figma-btn-primary:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 1px 2px rgba(255,255,255,0.9) inset, 0 6px 20px rgba(255,255,255,0.1);
-        }
-        .figma-btn-primary:active {
-            transform: translateY(0.5px) scale(0.99);
-        }
-        .figma-btn-primary:disabled {
-            opacity: 0.6;
-            transform: none;
-            cursor: not-allowed;
-        }
+        .figma-btn-primary:hover { transform: translateY(-1px); box-shadow: 0 1px 2px rgba(255,255,255,0.9) inset, 0 6px 20px rgba(255,255,255,0.1); }
+        .figma-btn-primary:active { transform: translateY(0.5px) scale(0.99); }
+        .figma-btn-primary:disabled { opacity: 0.6; transform: none; cursor: not-allowed; }
 
         .figma-btn-secondary {
-            background: rgba(255,255,255,0.02);
-            border: 1px solid rgba(255,255,255,0.06);
-            color: #fff;
-            transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+            background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.06); color: #fff; transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
         }
-        .figma-btn-secondary:hover {
-            background: rgba(255,255,255,0.05);
-            border-color: rgba(255,255,255,0.12);
-        }
-        .figma-btn-secondary:active {
-            transform: scale(0.99);
-        }
+        .figma-btn-secondary:hover { background: rgba(255,255,255,0.05); border-color: rgba(255,255,255,0.12); }
+        .figma-btn-secondary:active { transform: scale(0.99); }
 
         .view-section {
-            display: none;
-            opacity: 0;
-            transform: translateY(12px);
+            display: none; opacity: 0; transform: translateY(12px);
             transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1), transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
         }
-        .view-section.active {
-            display: block;
-            opacity: 1;
-            transform: translateY(0);
-        }
+        .view-section.active { display: block; opacity: 1; transform: translateY(0); }
         
         .bg-orb { position: fixed; border-radius: 50%; filter: blur(140px); opacity: 0.12; pointer-events: none; z-index: 0; }
         .orb-1 { top: -15%; left: -10%; width: 55vw; height: 55vw; background: #f59e0b; }
@@ -122,17 +85,11 @@
         .nav-item { position: relative; color: #52525b; transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1); }
         .nav-item:hover { color: #a1a1aa; }
         .nav-item.active { color: #fafafa; background: rgba(255,255,255,0.02); }
-        .nav-item.active::after {
-            content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 2px; background: #f59e0b;
-        }
-        
+        .nav-item.active::after { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 2px; background: #f59e0b; }
         .mob-nav-item { transition: color 0.2s ease; }
         .mob-nav-item.active { color: #f59e0b; }
-        
         input:-webkit-autofill, input:-webkit-autofill:hover, input:-webkit-autofill:focus {
-            -webkit-box-shadow: 0 0 0 30px #121214 inset !important;
-            -webkit-text-fill-color: white !important;
-            transition: background-color 5000s ease-in-out 0s;
+            -webkit-box-shadow: 0 0 0 30px #121214 inset !important; -webkit-text-fill-color: white !important; transition: background-color 5000s ease-in-out 0s;
         }
     </style>
 </head>
@@ -142,7 +99,6 @@
     <div class="bg-orb orb-2"></div>
 
     <div class="flex flex-1 overflow-hidden z-10 relative">
-        
         <nav class="w-72 bg-zinc-950/40 border-r border-white/5 hidden md:flex flex-col justify-between flex-shrink-0 backdrop-blur-3xl z-20">
             <div>
                 <div class="h-24 flex items-center px-8 border-b border-white/5">
@@ -167,7 +123,6 @@
         </nav>
 
         <main class="flex-1 overflow-y-auto relative w-full scroll-smooth">
-            
             <header class="md:hidden sticky top-0 w-full bg-zinc-950/80 backdrop-blur-3xl z-40 flex justify-center items-center h-20 border-b border-white/5 shrink-0">
                 <span class="text-lg font-light tracking-tight text-white">Vyeta<span class="font-medium text-brand-500 ml-0.5">Mobility</span></span>
             </header>
@@ -182,7 +137,6 @@
 
                     <div id="passenger-booking-view" class="figma-panel rounded-[2rem] p-6 md:p-8 relative overflow-hidden">
                         <form id="ride-request-form" onsubmit="AppControllers.handleRideRequest(event)" class="space-y-5">
-                            
                             <div class="relative pl-7 space-y-5 before:absolute before:left-[9px] before:top-3 before:bottom-3 before:w-px before:bg-gradient-to-b before:from-brand-500 before:to-zinc-800">
                                 <div class="relative">
                                     <div class="absolute -left-[32px] top-1/2 -translate-y-1/2 w-2.5 h-2.5 rounded-full bg-brand-500 ring-4 ring-brand-500/10 z-10"></div>
@@ -192,7 +146,6 @@
                                         <div class="absolute inset-y-0 right-4 flex items-center pointer-events-none text-zinc-500 text-xs"><i class="fas fa-chevron-down"></i></div>
                                     </div>
                                 </div>
-
                                 <div class="relative">
                                     <div class="absolute -left-[32px] top-1/2 -translate-y-1/2 w-2.5 h-2.5 rounded-sm bg-zinc-800 z-10 border border-zinc-600"></div>
                                     <label class="block text-[10px] font-bold text-zinc-500 uppercase tracking-widest mb-1.5 pl-0.5">Your Destination</label>
@@ -213,7 +166,6 @@
                                     <input type="text" id="pass-name" placeholder="First & Last Name" required class="figma-input w-full rounded-xl px-4 py-3.5 text-sm text-white placeholder-zinc-700">
                                 </div>
                             </div>
-                            
                             <div>
                                 <label class="block text-[10px] font-bold text-zinc-500 uppercase tracking-widest mb-1.5 pl-0.5">Contact Phone Number</label>
                                 <input type="tel" id="pass-phone" placeholder="e.g. 0977123456" required class="figma-input w-full rounded-xl px-4 py-3.5 text-sm text-white placeholder-zinc-700">
@@ -228,7 +180,6 @@
                                     <span id="pass-fare-estimate" class="text-2xl font-light tracking-tight text-white">ZMW <span class="font-medium text-brand-400">0.00</span></span>
                                 </div>
                             </div>
-
                             <button type="submit" id="btn-request-ride" class="figma-btn-primary w-full text-xs font-bold uppercase tracking-widest py-4 rounded-xl mt-2">Request Your Ride</button>
                         </form>
                     </div>
@@ -318,12 +269,10 @@
                         <div class="lg:col-span-5">
                             <div class="figma-panel rounded-[2rem] p-6 space-y-4">
                                 <h3 class="text-xs font-semibold text-white">Booking Details</h3>
-                                
                                 <div>
                                     <label class="block text-[10px] font-bold text-zinc-500 uppercase tracking-widest mb-1.5 pl-0.5">Selected Class</label>
                                     <input type="text" id="rental-car-type" value="Luxury Sedan" readonly class="figma-input w-full rounded-xl px-4 py-3 text-sm text-brand-400 font-medium cursor-not-allowed">
                                 </div>
-
                                 <div class="grid grid-cols-2 gap-3">
                                     <div>
                                         <label class="block text-[10px] font-bold text-zinc-500 uppercase tracking-widest mb-1.5 pl-0.5">Duration</label>
@@ -340,27 +289,24 @@
                                         </select>
                                     </div>
                                 </div>
-
                                 <div>
                                     <label class="block text-[10px] font-bold text-zinc-500 uppercase tracking-widest mb-1.5 pl-0.5">Delivery Address</label>
                                     <input type="text" id="rental-location" placeholder="Where should we bring the car?" required class="figma-input w-full rounded-xl px-4 py-3 text-sm text-white placeholder-zinc-700">
                                 </div>
-
                                <div class="grid grid-cols-2 gap-3 mb-3">
-    <div>
-        <label class="block text-[10px] font-bold text-zinc-500 uppercase tracking-widest mb-1.5 pl-0.5">Your Name</label>
-        <input type="text" id="rental-name" placeholder="Full name" required class="figma-input w-full rounded-xl px-4 py-3 text-sm text-white placeholder-zinc-700">
-    </div>
-    <div>
-        <label class="block text-[10px] font-bold text-zinc-500 uppercase tracking-widest mb-1.5 pl-0.5">Phone Number</label>
-        <input type="tel" id="rental-phone" placeholder="Phone number" required class="figma-input w-full rounded-xl px-4 py-3 text-sm text-white placeholder-zinc-700">
-    </div>
-</div>
-<div>
-    <label class="block text-[10px] font-bold text-zinc-500 uppercase tracking-widest mb-1.5 pl-0.5">Email Address</label>
-    <input type="email" id="rental-email" placeholder="For booking confirmation" required class="figma-input w-full rounded-xl px-4 py-3 text-sm text-white placeholder-zinc-700">
-</div>
-
+                                    <div>
+                                        <label class="block text-[10px] font-bold text-zinc-500 uppercase tracking-widest mb-1.5 pl-0.5">Your Name</label>
+                                        <input type="text" id="rental-name" placeholder="Full name" required class="figma-input w-full rounded-xl px-4 py-3 text-sm text-white placeholder-zinc-700">
+                                    </div>
+                                    <div>
+                                        <label class="block text-[10px] font-bold text-zinc-500 uppercase tracking-widest mb-1.5 pl-0.5">Phone Number</label>
+                                        <input type="tel" id="rental-phone" placeholder="Phone number" required class="figma-input w-full rounded-xl px-4 py-3 text-sm text-white placeholder-zinc-700">
+                                    </div>
+                                </div>
+                                <div>
+                                    <label class="block text-[10px] font-bold text-zinc-500 uppercase tracking-widest mb-1.5 pl-0.5">Email Address</label>
+                                    <input type="email" id="rental-email" placeholder="For booking confirmation" required class="figma-input w-full rounded-xl px-4 py-3 text-sm text-white placeholder-zinc-700">
+                                </div>
                                 <div class="bg-black/40 border border-white/5 rounded-xl p-4 flex justify-between items-center shadow-inner-light">
                                     <div>
                                         <p class="text-[10px] font-bold tracking-widest text-zinc-400 uppercase">Estimated Total</p>
@@ -370,7 +316,6 @@
                                         <span id="rental-total-estimate" class="text-xl font-light tracking-tight text-white">ZMW <span class="font-medium text-brand-400">3,600.00</span></span>
                                     </div>
                                 </div>
-
                                 <button onclick="AppControllers.handleRentalSubmit()" id="btn-submit-rental" class="figma-btn-primary w-full text-xs font-bold uppercase tracking-widest py-3.5 rounded-xl">Book Rental</button>
                             </div>
                         </div>
@@ -391,7 +336,6 @@
                             <div class="w-10 h-10 rounded-xl bg-white/5 border border-white/5 flex items-center justify-center text-brand-400 mb-4"><i class="fas fa-sign-in-alt text-sm"></i></div>
                             <h3 class="text-lg font-medium text-white mb-1">Driver Sign In</h3>
                             <p class="text-xs text-zinc-500 mb-6 font-light">Enter your registered phone number to access your account.</p>
-                            
                             <div class="space-y-4">
                                 <input type="tel" id="login-phone" placeholder="Phone Number" class="figma-input w-full rounded-xl px-4 py-3.5 text-sm text-white">
                                 <button onclick="AppControllers.handleDriverLogin()" id="btn-login-driver" class="figma-btn-primary w-full py-3.5 rounded-xl text-xs font-bold uppercase tracking-widest">Sign In</button>
@@ -402,7 +346,6 @@
                             <div class="w-10 h-10 rounded-xl bg-white/5 border border-white/5 flex items-center justify-center text-brand-400 mb-4"><i class="fas fa-user-plus text-sm"></i></div>
                             <h3 class="text-lg font-medium text-white mb-1">Become a Driver</h3>
                             <p class="text-xs text-zinc-500 mb-6 font-light">Join our network of premium professional drivers.</p>
-                            
                             <div class="space-y-4">
                                 <input type="text" id="driver-name" placeholder="Full Name" class="figma-input w-full rounded-xl px-4 py-3 text-sm text-white">
                                 <div class="grid grid-cols-2 gap-3">
@@ -413,36 +356,30 @@
                                     <input type="text" id="driver-reg" placeholder="Vehicle License Plate" class="figma-input w-full rounded-xl px-4 py-3 text-sm text-white uppercase">
                                     <input type="text" id="driver-license" placeholder="Driver's License Number" class="figma-input w-full rounded-xl px-4 py-3 text-sm text-white">
                                 </div>
-                                
                                 <div class="bg-black/30 border border-white/5 rounded-xl p-3.5">
                                     <label class="block text-[9px] font-bold text-zinc-500 uppercase tracking-widest mb-2">Upload Photo of License</label>
                                     <input type="file" id="driver-photo" accept="image/*" class="w-full text-xs text-zinc-500 file:bg-white/5 file:text-white file:border file:border-white/10 file:rounded-lg file:px-3 file:py-1.5 file:mr-3 file:cursor-pointer file:text-[11px] file:font-semibold hover:file:bg-white/10">
                                 </div>
-                                
                                 <div class="relative">
                                     <select id="driver-rank-select-reg" class="figma-input w-full rounded-xl px-4 py-3 text-sm text-white appearance-none"></select>
                                     <div class="absolute inset-y-0 right-4 flex items-center pointer-events-none text-zinc-500 text-xs"><i class="fas fa-chevron-down"></i></div>
                                 </div>
-                                
                                 <button onclick="AppControllers.handleDriverRegister()" id="btn-register" class="figma-btn-secondary w-full py-3.5 rounded-xl text-xs font-bold uppercase tracking-widest mt-1">Submit Application</button>
                             </div>
                         </div>
                     </div>
 
                     <div id="driver-active-dashboard" class="hidden grid grid-cols-1 lg:grid-cols-12 gap-6 w-full">
-                        
                         <div class="lg:col-span-4 figma-panel rounded-[2rem] p-6 flex flex-col justify-between">
                             <div class="space-y-6">
                                 <div>
                                     <div id="drv-approval-badge" class="text-[9px] font-bold tracking-widest px-2.5 py-1 rounded border inline-block mb-2">STATUS</div>
                                     <h4 class="text-xl font-medium text-white tracking-tight" id="lbl-active-driver">--</h4>
                                 </div>
-                                
                                 <div class="bg-gradient-to-br from-zinc-900 to-zinc-950 border border-white/5 rounded-2xl p-5 shadow-inner-light relative overflow-hidden group">
                                     <p class="text-[10px] text-zinc-500 font-bold mb-1 uppercase tracking-widest">Wallet Balance</p>
                                     <h3 class="text-2xl font-light text-white tracking-tight font-mono" id="drv-wallet-bal">ZMW 0.00</h3>
                                 </div>
-                                
                                 <div class="space-y-3">
                                     <label class="block text-[10px] font-bold text-zinc-500 uppercase tracking-widest pl-0.5">Your Location Hub</label>
                                     <div class="relative">
@@ -452,7 +389,6 @@
                                     <button onclick="AppControllers.handleRankChange()" class="figma-btn-secondary w-full text-[10px] font-bold uppercase tracking-widest py-3 rounded-xl">Update Location</button>
                                 </div>
                             </div>
-                            
                             <button onclick="AppControllers.handleDriverLogout()" class="w-full bg-red-500/5 text-red-400 text-[10px] font-bold uppercase tracking-widest py-3.5 rounded-xl hover:bg-red-500/10 transition-all border border-red-500/10 mt-6">Log Out</button>
                         </div>
 
@@ -466,7 +402,6 @@
                             </div>
                             
                             <div class="p-6 md:p-8 flex-1 flex flex-col justify-center items-center min-h-[380px]">
-                                
                                 <div id="empty-trip-state" class="text-center max-w-xs">
                                     <div class="w-16 h-16 rounded-full bg-white/5 border border-white/5 flex items-center justify-center mx-auto mb-4 text-zinc-600"><i class="fas fa-power-off text-xl"></i></div>
                                     <p class="text-xs font-light text-zinc-500 tracking-wide" id="idle-text">You are currently offline. Go online to start receiving ride requests.</p>
@@ -476,7 +411,6 @@
                                     <div class="bg-gradient-to-b from-brand-500/5 to-black/40 border border-brand-500/20 rounded-2xl p-6 text-center shadow-glow relative backdrop-blur-xl">
                                         <p class="text-brand-400 text-[9px] font-bold tracking-widest uppercase mb-2">New Ride Request</p>
                                         <h3 class="text-4xl font-light text-white font-mono mb-4" id="offer-timer">30s</h3>
-                                        
                                         <div class="bg-black/40 p-4 rounded-xl text-left mb-6 border border-white/5 space-y-3">
                                             <div>
                                                 <p class="text-[9px] text-zinc-500 uppercase font-bold tracking-widest">Drop-off Location</p>
@@ -488,7 +422,6 @@
                                                 <p class="font-mono text-brand-400 text-xl font-light mt-0.5" id="offer-fare">--</p>
                                             </div>
                                         </div>
-                                        
                                         <div class="flex gap-2.5">
                                             <button onclick="AppControllers.handleAcceptRide()" class="flex-1 figma-btn-primary text-xs font-bold uppercase tracking-widest py-3.5 rounded-xl">Accept Ride</button>
                                             <button onclick="AppControllers.handleDeclineRide()" class="flex-1 figma-btn-secondary text-xs font-semibold uppercase tracking-widest py-3.5 rounded-xl">Decline</button>
@@ -501,7 +434,6 @@
                                         <h4 class="font-bold tracking-widest uppercase text-emerald-400 text-[9px] mb-4 flex items-center justify-center">
                                             <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 mr-2 animate-pulse"></span> Ride in Progress
                                         </h4>
-                                        
                                         <div class="space-y-4 text-left">
                                             <div>
                                                 <span class="block text-[9px] font-bold tracking-widest text-zinc-500 uppercase">Passenger Destination</span>
@@ -514,20 +446,17 @@
                                             </div>
                                         </div>
                                     </div>
-                                    
                                     <div class="flex flex-col gap-2.5">
                                         <a href="#" id="btn-call-passenger" class="figma-btn-secondary w-full text-xs font-bold uppercase tracking-widest py-3.5 rounded-xl text-center"><i class="fas fa-phone mr-2"></i> Call Passenger</a>
                                         <button onclick="AppControllers.handleCompleteRide()" id="btn-complete" class="figma-btn-primary w-full text-xs font-bold uppercase tracking-widest py-3.5 rounded-xl">Complete Ride & Collect Fare</button>
                                     </div>
                                 </div>
-
                             </div>
                         </div>
                     </div>
                 </section>
 
                 <section id="admin-tab" class="view-section max-w-6xl w-full mx-auto">
-                    
                     <div id="admin-login-view" class="max-w-sm mx-auto figma-panel p-6 md:p-8 rounded-[2rem]">
                         <div class="text-center mb-6">
                             <div class="w-12 h-12 bg-white/5 border border-white/5 text-white rounded-xl flex items-center justify-center mx-auto mb-4 text-base"><i class="fas fa-lock"></i></div>
@@ -548,7 +477,6 @@
                         </div>
                         
                         <div class="grid grid-cols-1 xl:grid-cols-3 gap-6">
-                            
                             <div class="figma-panel p-6 rounded-[2rem] xl:col-span-3 overflow-hidden">
                                 <h3 class="text-[10px] font-bold tracking-widest text-zinc-400 uppercase mb-4">Driver Network Status</h3>
                                 <div class="overflow-x-auto">
@@ -602,33 +530,19 @@
 
 <script>
 /**
- * VYETA MOBILITY PLATFORM - CORE LOGIC
+ * VYETA MOBILITY PLATFORM - SUPABASE MIGRATION
  */
 
-const API_URL = "https://script.google.com/macros/s/AKfycbxZlu_YHm0_KlyfScvyw0RgovLkwWVS2eEh2GGa9gxGP-TxcAXLZRZnpmrNgBfJjoTGMQ/exec"; 
+// --- ⚠️ UPDATE THESE CREDENTIALS ⚠️ ---
+const SUPABASE_URL = "YOUR_SUPABASE_PROJECT_URL"; 
+const SUPABASE_ANON_KEY = "YOUR_SUPABASE_ANON_KEY";
+const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 const DriverSession = {
     save: (d) => { localStorage.setItem('vmn_sess', JSON.stringify(d)); currentDriverSession = d; },
     get: () => { const t = localStorage.getItem('vmn_sess'); return t ? JSON.parse(t) : null; },
     clear: () => { localStorage.removeItem('vmn_sess'); currentDriverSession = null; }
 };
-
-const APIService = {
-    post: async (action, payload) => {
-        const res = await fetch(API_URL, { method: 'POST', body: JSON.stringify({ action, payload }) });
-        const data = await res.json();
-        if (data.status === 'error') throw new Error(data.message);
-        return data.data;
-    },
-    get: async (action) => {
-        const res = await fetch(`${API_URL}?action=${action}`);
-        const data = await res.json();
-        if (data.status === 'error') throw new Error(data.message);
-        return data.data;
-    }
-};
-
-const convertFileToBase64 = (f) => new Promise((res, rej) => { const r = new FileReader(); r.readAsDataURL(f); r.onload = () => res(r.result.split(',')[1]); r.onerror = e => rej(e); });
 
 const getGeoLocation = () => new Promise((resolve, reject) => {
     if (!navigator.geolocation) return reject(new Error("Location services disabled or unavailable."));
@@ -638,27 +552,60 @@ const getGeoLocation = () => new Promise((resolve, reject) => {
     );
 });
 
-let systemData = { system: [], ranks: [], drivers: [], trips: [], queues: {} };
+// System State mapped to Legacy UI Expectations
+let systemData = { ranks: [], drivers: [], trips: [], queues: {} };
 let currentDriverSession = DriverSession.get();
-let pollingInterval = null;
 let offerTimerInterval = null;
 let selectedCarRate = 1200;
 
+// Data Transformation Helpers
+const mapHub = (h) => ({ id: h.id, name: h.name, baseFee: h.base_fee, lat: h.latitude, lng: h.longitude });
+const mapProfile = (p) => ({
+    id: p.id, name: `${p.full_name}||${p.phone}`, email: p.phone, vehicleReg: p.vehicle_reg,
+    rankId: p.current_hub_id, approvalStatus: p.approval_status, paymentStatus: p.payment_status,
+    walletBalance: p.wallet_balance, state: p.driver_state, currentTripId: p.current_trip_id, licensePhotoUrl: p.license_photo_url
+});
+const mapTrip = (t) => ({ id: t.id, destination: t.destination, fare: t.fare, status: t.status, driverId: t.driver_id });
+
 const AppControllers = {
     refreshData: async () => {
-        try { 
-            systemData = await APIService.get('getAllData'); 
+        try {
+            const { data: hubs } = await supabase.from('hubs').select('*');
+            const { data: profiles } = await supabase.from('profiles').select('*').eq('role', 'driver').order('updated_at', { ascending: true });
+            const { data: trips } = await supabase.from('trips').select('*').neq('status', 'completed').neq('status', 'cancelled');
+
+            systemData.ranks = (hubs || []).map(mapHub);
+            systemData.drivers = (profiles || []).map(mapProfile);
+            systemData.trips = (trips || []).map(mapTrip);
+
+            // Compute live hub queues based on update times
+            systemData.queues = {};
+            systemData.ranks.forEach(r => {
+                systemData.queues[r.id] = systemData.drivers
+                    .filter(d => d.rankId === r.id && d.state === 'idle')
+                    .map(d => d.id);
+            });
+
             AppUI.populateRankDropdowns();
-        } catch(e) { console.warn("Background refresh skipped."); }
+        } catch(e) { console.warn("Sync error:", e); }
     },
-    startPolling: () => {
-        if(pollingInterval) clearInterval(pollingInterval);
-        pollingInterval = setInterval(async () => {
-            await AppControllers.refreshData();
-            if(!document.getElementById('driver-tab').classList.contains('hidden')) AppUI.renderDriverView();
-            if(!document.getElementById('passenger-tab').classList.contains('hidden') && !document.getElementById('passenger-status-area').classList.contains('hidden')) AppUI.renderPassengerWaitingView();
-        }, 5000); 
+    
+    startRealtimeSync: () => {
+        // Real-time Database listeners replacing old polling
+        supabase.channel('vyeta_realtime')
+            .on('postgres_changes', { event: '*', schema: 'public', table: 'trips' }, async () => {
+                await AppControllers.refreshData();
+                if(!document.getElementById('passenger-tab').classList.contains('hidden')) AppUI.renderPassengerWaitingView();
+                if(!document.getElementById('driver-tab').classList.contains('hidden')) AppUI.renderDriverView();
+            })
+            .on('postgres_changes', { event: '*', schema: 'public', table: 'profiles' }, async () => {
+                await AppControllers.refreshData();
+                if(!document.getElementById('driver-tab').classList.contains('hidden')) AppUI.renderDriverView();
+                if(!document.getElementById('admin-dashboard-view').classList.contains('hidden')) AppUI.renderAdmin();
+            })
+            .subscribe();
     },
+
     updateFareEstimate: () => {
         try {
             const rankId = document.getElementById('pass-rank-select').value;
@@ -669,177 +616,199 @@ const AppControllers = {
             document.getElementById('pass-fare-estimate').innerHTML = `ZMW <span class="font-medium text-brand-400">${total.toFixed(2)}</span>`;
         } catch(e) {}
     },
+
     selectRentalCar: (className, dailyRate) => {
         selectedCarRate = dailyRate;
         document.getElementById('rental-car-type').value = className;
-        
-        document.querySelectorAll('.rental-car-card').forEach(card => {
-            card.classList.remove('ring-1', 'ring-brand-500/30', 'bg-white/[0.03]');
-        });
-        const clickedCard = event.currentTarget;
-        clickedCard.classList.add('ring-1', 'ring-brand-500/30', 'bg-white/[0.03]');
-        
+        document.querySelectorAll('.rental-car-card').forEach(card => card.classList.remove('ring-1', 'ring-brand-500/30', 'bg-white/[0.03]'));
+        event.currentTarget.classList.add('ring-1', 'ring-brand-500/30', 'bg-white/[0.03]');
         AppControllers.updateRentalTotal();
     },
+
     updateRentalTotal: () => {
         const days = parseInt(document.getElementById('rental-days').value) || 1;
-        const driverOption = document.getElementById('rental-driver-option').value;
-        const driverSurcharge = driverOption === 'chauffeur' ? 250 : 0;
+        const driverSurcharge = document.getElementById('rental-driver-option').value === 'chauffeur' ? 250 : 0;
         const total = days * (selectedCarRate + driverSurcharge);
         document.getElementById('rental-total-estimate').innerHTML = `ZMW <span class="font-medium text-brand-400">${total.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>`;
     },
-   handleRentalSubmit: async () => {
-        const name = document.getElementById('rental-name').value;
-        const phone = document.getElementById('rental-phone').value;
-        const email = document.getElementById('rental-email').value; // Now capturing email
-        const locationStr = document.getElementById('rental-location').value;
-        const car = document.getElementById('rental-car-type').value;
-        const days = document.getElementById('rental-days').value;
-        const mode = document.getElementById('rental-driver-option').value === 'chauffeur' ? 'With Chauffeur' : 'Self-drive';
 
-        // Extract raw number from the UI
-        const totalText = document.getElementById('rental-total-estimate').innerText;
-        const total = parseFloat(totalText.replace('ZMW', '').replace(/,/g, '').trim());
+    handleRentalSubmit: async () => {
+        const payload = {
+            customer_name: document.getElementById('rental-name').value,
+            customer_phone: document.getElementById('rental-phone').value,
+            customer_email: document.getElementById('rental-email').value,
+            delivery_location: document.getElementById('rental-location').value,
+            car_class: document.getElementById('rental-car-type').value,
+            duration_days: parseInt(document.getElementById('rental-days').value),
+            driver_mode: document.getElementById('rental-driver-option').value,
+            total_fare: parseFloat(document.getElementById('rental-total-estimate').innerText.replace(/[^0-9.]/g, ''))
+        };
 
-        if (!name || !phone || !email || !locationStr) {
-            alert("Please fill in your contact, email, and delivery location details.");
-            return;
-        }
+        if (!payload.customer_name || !payload.customer_phone || !payload.delivery_location) return alert("Please fill in missing details.");
 
         const btn = document.getElementById('btn-submit-rental');
-        btn.innerHTML = `<i class="fas fa-spinner fa-spin mr-2"></i> Processing...`;
-        btn.disabled = true;
+        btn.innerHTML = `<i class="fas fa-spinner fa-spin mr-2"></i> Processing...`; btn.disabled = true;
 
         try {
-            await APIService.post('requestRental', { 
-                name, phone, email, location: locationStr, car, days, mode, total 
-            });
-            
-            alert(`Thank you, ${name}. Your request has been sent! Please check ${email} for your confirmation receipt.`);
-            
-            // Clear form after success
-            document.getElementById('rental-name').value = '';
-            document.getElementById('rental-phone').value = '';
-            document.getElementById('rental-email').value = '';
-            document.getElementById('rental-location').value = '';
+            const { error } = await supabase.from('rentals').insert([payload]);
+            if (error) throw error;
+            alert(`Thank you, ${payload.customer_name}. Your request has been sent!`);
+            ['rental-name', 'rental-phone', 'rental-email', 'rental-location'].forEach(id => document.getElementById(id).value = '');
         } catch(e) {
-            alert("There was an error submitting your request. Please check your connection and try again.");
+            alert("Error submitting request.");
         } finally {
-            btn.innerHTML = "Book Rental";
-            btn.disabled = false;
+            btn.innerHTML = "Book Rental"; btn.disabled = false;
         }
     },
+
     handleRideRequest: async (e) => {
         e.preventDefault();
         const btn = document.getElementById('btn-request-ride');
         btn.innerHTML = `<i class="fas fa-spinner fa-spin mr-2"></i> Finding your ride...`; btn.disabled = true;
 
+        const rankId = document.getElementById('pass-rank-select').value;
+        const dest = `${document.getElementById('pass-destination').value} [Rider: ${document.getElementById('pass-name').value} || Tel: ${document.getElementById('pass-phone').value}]`;
+        const fare = parseFloat(document.getElementById('pass-fare-estimate').innerText.replace(/[^0-9.]/g, ''));
+        const queue = systemData.queues[rankId] || [];
+
         try {
-            const rankId = document.getElementById('pass-rank-select').value;
-            const dest = `${document.getElementById('pass-destination').value} [Rider: ${document.getElementById('pass-name').value} || Tel: ${document.getElementById('pass-phone').value}]`;
-            const dist = parseFloat(document.getElementById('pass-distance').value) || 5;
-            const fareString = document.getElementById('pass-fare-estimate').innerText;
-            const fare = parseFloat(fareString.replace('ZMW ', '').replace(',', ''));
+            const payload = {
+                hub_id: rankId,
+                passenger_name: document.getElementById('pass-name').value,
+                passenger_phone: document.getElementById('pass-phone').value,
+                destination: dest,
+                distance: parseFloat(document.getElementById('pass-distance').value) || 5,
+                fare: fare,
+                status: queue.length > 0 ? 'offered' : 'requested',
+                driver_id: queue.length > 0 ? queue[0] : null
+            };
 
-            const trip = await APIService.post('requestRide', { rankId, destination: dest, distance: dist, fare });
-            sessionStorage.setItem('active_pass_trip', trip.tripId);
+            const { data: tripData, error } = await supabase.from('trips').insert([payload]).select();
+            if (error) throw error;
 
+            if (queue.length > 0) {
+                // Update matched driver
+                await supabase.from('profiles').update({ 
+                    driver_state: 'offered', 
+                    current_trip_id: tripData[0].id 
+                }).eq('id', queue[0]);
+            }
+
+            sessionStorage.setItem('active_pass_trip', tripData[0].id);
             document.getElementById('passenger-booking-view').classList.add('hidden');
             document.getElementById('passenger-status-area').classList.remove('hidden');
-            AppControllers.startPolling(); 
         } catch (err) {
-            alert(err.message || "All our drivers are currently busy. Please try again in a few minutes.");
+            alert("Unable to process request right now.");
             btn.innerHTML = `Request Your Ride`; btn.disabled = false;
         }
     },
-    handleDriverRegister: async () => {
-        const name = document.getElementById('driver-name').value;
-        const phone = document.getElementById('driver-phone').value;
-        const email = document.getElementById('driver-email').value;
-        const license = document.getElementById('driver-license').value;
-        const reg = document.getElementById('driver-reg').value;
-        const rankId = document.getElementById('driver-rank-select-reg').value;
-        const fileRef = document.getElementById('driver-photo');
 
-        if (!name || !phone || !email || !reg || !rankId || !fileRef.files.length) return alert("Please fill out all details and include a clean photo of your license.");
+    handleDriverRegister: async () => {
+        const fileRef = document.getElementById('driver-photo').files[0];
+        if (!fileRef) return alert("Please upload a photo of your license.");
+        const phone = document.getElementById('driver-phone').value;
         const btn = document.getElementById('btn-register'); btn.innerText = "Uploading your details..."; btn.disabled = true;
 
         try {
-            const photo64 = await convertFileToBase64(fileRef.files[0]);
-            const res = await APIService.post('registerDriver', { name: `${name}||${phone}`, email, licenseNumber: license, vehicleReg: reg, rankId, photoBase64: photo64, photoMimeType: fileRef.files[0].type });
-            DriverSession.save(res);
-            alert("Your profile is under review. You'll be able to sign in once approved by management.");
+            const filePath = `licenses/${phone}_${Date.now()}.${fileRef.name.split('.').pop()}`;
+            const { error: uploadErr } = await supabase.storage.from('driver-documents').upload(filePath, fileRef);
+            if(uploadErr) throw uploadErr;
+
+            const { data: urlData } = supabase.storage.from('driver-documents').getPublicUrl(filePath);
+
+            const { data: authData, error: authErr } = await supabase.auth.signUp({
+                email: document.getElementById('driver-email').value || `${phone}@vyeta.local`,
+                password: `VyetaSecure!${phone}`, // Auto-generated for seamless phone-based login flow
+                options: {
+                    data: {
+                        full_name: document.getElementById('driver-name').value,
+                        phone: phone,
+                        role: 'driver',
+                        vehicle_reg: document.getElementById('driver-reg').value,
+                        license_number: document.getElementById('driver-license').value,
+                        license_photo_url: urlData.publicUrl,
+                        current_hub_id: document.getElementById('driver-rank-select-reg').value
+                    }
+                }
+            });
+            if(authErr) throw authErr;
+
+            alert("Your profile is under review. You'll be able to sign in once approved.");
             await AppControllers.refreshData(); AppUI.renderDriverView();
-        } catch(e) { alert("There was an error submitting your details. Please try again."); btn.innerText = "Submit Application"; btn.disabled = false; }
+        } catch(e) {
+            alert("Error submitting details: " + e.message);
+            btn.innerText = "Submit Application"; btn.disabled = false; 
+        }
     },
+
     handleDriverLogin: async () => {
         const phone = document.getElementById('login-phone').value.trim();
         if(!phone) return;
-        const btn = document.getElementById('btn-login-driver'); btn.innerText = "Signing you in..."; btn.disabled = true;
+        const btn = document.getElementById('btn-login-driver'); btn.innerText = "Signing in..."; btn.disabled = true;
         
-        await AppControllers.refreshData();
-        const match = systemData.drivers.find(d => d.name && d.name.includes(`||${phone}`));
-        if(match) { DriverSession.save(match); AppUI.renderDriverView(); AppControllers.startPolling(); } 
-        else alert("We couldn't find an account with this phone number.");
-        
+        const { data } = await supabase.from('profiles').select('*').eq('phone', phone).eq('role', 'driver').single();
+        if(data) { 
+            DriverSession.save(mapProfile(data)); 
+            AppUI.renderDriverView(); 
+        } else {
+            alert("We couldn't find an account with this phone number.");
+        }
         btn.innerText = "Sign In"; btn.disabled = false;
     },
-    handleDriverLogout: () => { DriverSession.clear(); if(pollingInterval) clearInterval(pollingInterval); AppUI.renderDriverView(); },
+
+    handleDriverLogout: () => { DriverSession.clear(); AppUI.renderDriverView(); },
+
     handleToggleAvailability: async () => {
         if(!currentDriverSession) return;
         const btn = document.getElementById('btn-toggle-status'); btn.disabled = true; btn.innerHTML = `<i class="fas fa-spinner fa-spin mr-2"></i> Connecting...`;
         try {
-            if (currentDriverSession.state === 'offline' || currentDriverSession.state === '') {
-                let coords = { lat: 0, lng: 0 };
-                try { coords = await getGeoLocation(); } catch(geoErr) {}
-                await APIService.post('joinQueue', { driverId: currentDriverSession.id, rankId: currentDriverSession.rankId, lat: coords.lat, lng: coords.lng });
-            } else {
-                await APIService.post('goOffline', { driverId: currentDriverSession.id });
-            }
-            await AppControllers.refreshDriverStatus();
-        } catch(e) { alert(e.message); } finally { btn.disabled = false; }
+            const newState = (currentDriverSession.state === 'offline' || currentDriverSession.state === '') ? 'idle' : 'offline';
+            await supabase.from('profiles').update({ driver_state: newState, updated_at: new Date().toISOString() }).eq('id', currentDriverSession.id);
+        } catch(e) { alert("Error connecting."); } 
     },
+
     handleRankChange: async () => {
         const newRankId = document.getElementById('driver-rank-select-update').value;
         if(newRankId === currentDriverSession.rankId) return;
-        try {
-            await APIService.post('driverChangeRank', { driverId: currentDriverSession.id, newRankId });
-            alert("Your hub has been updated. You are now offline.");
-            await AppControllers.refreshDriverStatus();
-        } catch(e) {}
+        await supabase.from('profiles').update({ current_hub_id: newRankId, driver_state: 'offline' }).eq('id', currentDriverSession.id);
+        alert("Your hub has been updated. You are now offline.");
     },
+
     refreshDriverStatus: async () => {
         if (!currentDriverSession) return;
         await AppControllers.refreshData();
         const serverSync = systemData.drivers.find(d => d.id === currentDriverSession.id);
-        if(serverSync) { DriverSession.save(serverSync); }
+        if(serverSync) DriverSession.save(serverSync);
         AppUI.renderDriverView();
     },
+
     handleAcceptRide: async () => {
         if(!currentDriverSession.currentTripId) return;
-        if(offerTimerInterval) clearInterval(offerTimerInterval); offerTimerInterval = null;
-        try {
-            await APIService.post('acceptRide', { tripId: currentDriverSession.currentTripId, driverId: currentDriverSession.id });
-            await AppControllers.refreshDriverStatus();
-        } catch(e) { alert("This ride request is no longer available."); }
+        if(offerTimerInterval) { clearInterval(offerTimerInterval); offerTimerInterval = null; }
+        
+        await supabase.from('trips').update({ status: 'in_progress' }).eq('id', currentDriverSession.currentTripId);
+        await supabase.from('profiles').update({ driver_state: 'on_trip' }).eq('id', currentDriverSession.id);
     },
+
     handleDeclineRide: async () => {
         if(!currentDriverSession.currentTripId) return;
-        if(offerTimerInterval) clearInterval(offerTimerInterval); offerTimerInterval = null;
-        try {
-            document.getElementById('offer-trip-panel').classList.add('hidden');
-            await APIService.post('declineRide', { tripId: currentDriverSession.currentTripId, driverId: currentDriverSession.id });
-            await AppControllers.refreshDriverStatus();
-        } catch(e) {}
+        if(offerTimerInterval) { clearInterval(offerTimerInterval); offerTimerInterval = null; }
+        document.getElementById('offer-trip-panel').classList.add('hidden');
+        
+        await supabase.from('trips').update({ driver_id: null, status: 'requested' }).eq('id', currentDriverSession.currentTripId);
+        await supabase.from('profiles').update({ driver_state: 'idle', current_trip_id: null, updated_at: new Date().toISOString() }).eq('id', currentDriverSession.id);
     },
+
     handleCompleteRide: async () => {
         if(!currentDriverSession.currentTripId) return;
-        const btn = document.getElementById('btn-complete'); btn.innerText = "Completing ride..."; btn.disabled = true;
-        try {
-            await APIService.post('completeRide', { tripId: currentDriverSession.currentTripId });
-            await AppControllers.refreshDriverStatus();
-        } catch(e) { alert("There was a problem updating the ride status."); } finally { btn.innerText = "Complete Ride & Collect Fare"; btn.disabled = false; }
+        const btn = document.getElementById('btn-complete'); btn.innerText = "Completing..."; btn.disabled = true;
+        
+        await supabase.from('trips').update({ status: 'completed' }).eq('id', currentDriverSession.currentTripId);
+        await supabase.from('profiles').update({ driver_state: 'idle', current_trip_id: null, updated_at: new Date().toISOString() }).eq('id', currentDriverSession.id);
+        
+        btn.innerText = "Complete Ride & Collect Fare"; btn.disabled = false;
     },
+
     handleCaptureRankCoords: async () => {
         const btn = document.getElementById('btn-capture-gps');
         const input = document.getElementById('admin-rank-coords');
@@ -849,77 +818,65 @@ const AppControllers = {
             input.value = `${pos.lat.toFixed(6)}, ${pos.lng.toFixed(6)}`;
         } catch(e) {} finally { btn.innerHTML = `<i class="fas fa-crosshairs"></i>`; }
     },
+
     handleAdminTopUp: async (driverId) => {
         const amtInput = document.getElementById(`topup-${driverId}`);
         const value = parseFloat(amtInput.value);
         if(isNaN(value) || value <= 0) return;
-        try {
-            await APIService.post('topUpWallet', { driverId, amount: value });
-            amtInput.value = ''; 
-            await AppControllers.refreshData(); AppUI.renderAdmin();
-        } catch(e) {}
+        
+        const driver = systemData.drivers.find(d => d.id === driverId);
+        await supabase.from('profiles').update({ wallet_balance: parseFloat(driver.walletBalance) + value }).eq('id', driverId);
+        amtInput.value = '';
     },
+
     handleAdminLogin: async () => {
         const pin = document.getElementById('admin-pin');
-        const btn = document.getElementById('btn-login'); btn.innerText = "Signing in..."; btn.disabled = true;
-        try {
-            await APIService.post('verifyAdmin', { pin: pin ? pin.value : "2026" });
-            document.getElementById('admin-login-view').classList.add('hidden'); document.getElementById('admin-dashboard-view').classList.remove('hidden');
-            if(pin) pin.value = '';
-            await AppControllers.refreshData(); AppUI.renderAdmin();
-        } catch(e) { if(pin) alert("Incorrect PIN."); } finally { btn.innerText = "Login to Admin"; btn.disabled = false; }
+        if (pin.value === "2026") { // Easy drop-in until robust Admin table is built
+            document.getElementById('admin-login-view').classList.add('hidden'); 
+            document.getElementById('admin-dashboard-view').classList.remove('hidden');
+            pin.value = '';
+            AppUI.renderAdmin();
+        } else {
+            alert("Incorrect PIN.");
+        }
     },
-    handleAdminLogout: () => { document.getElementById('admin-dashboard-view').classList.add('hidden'); document.getElementById('admin-login-view').classList.remove('hidden'); },
+
+    handleAdminLogout: () => { 
+        document.getElementById('admin-dashboard-view').classList.add('hidden'); 
+        document.getElementById('admin-login-view').classList.remove('hidden'); 
+    },
+
     handleCreateRank: async (e) => {
         e.preventDefault();
         const coords = document.getElementById('admin-rank-coords').value.split(',');
-        const lat = coords[0] ? parseFloat(coords[0].trim()) : 0;
-        const lng = coords[1] ? parseFloat(coords[1].trim()) : 0;
-        await APIService.post('createRank', { name: document.getElementById('admin-rank-name').value, baseFee: document.getElementById('admin-rank-fee').value, lat, lng });
-        e.target.reset(); await AppControllers.refreshData(); AppUI.renderAdmin();
+        await supabase.from('hubs').insert([{ 
+            name: document.getElementById('admin-rank-name').value, 
+            base_fee: document.getElementById('admin-rank-fee').value, 
+            latitude: coords[0] ? parseFloat(coords[0].trim()) : 0, 
+            longitude: coords[1] ? parseFloat(coords[1].trim()) : 0 
+        }]);
+        e.target.reset();
     },
+
     handleAdminUpdateDriver: async (id, field, selectElement) => {
-        try {
-            await APIService.post('adminUpdateDriver', { driverId: id, field: field, value: selectElement.value });
-            await AppControllers.refreshData(); AppUI.renderAdmin();
-        } catch(e) {}
+        const mappedField = field === 'approvalStatus' ? 'approval_status' : field;
+        await supabase.from('profiles').update({ [mappedField]: selectElement.value }).eq('id', id);
     }
 };
 
 const AppUI = {
     switchTab: (tabId) => {
-        document.querySelectorAll('.view-section').forEach(el => { 
-            el.classList.remove('active'); 
-            el.classList.add('hidden'); 
-        });
-        
+        document.querySelectorAll('.view-section').forEach(el => { el.classList.remove('active'); el.classList.add('hidden'); });
         const target = document.getElementById(tabId);
-        target.classList.remove('hidden');
-        
-        void target.offsetWidth; 
-        target.classList.add('active');
+        target.classList.remove('hidden'); void target.offsetWidth; target.classList.add('active');
         
         document.querySelectorAll('.nav-item').forEach(btn => btn.classList.remove('active'));
-        document.querySelectorAll('.mob-nav-item').forEach(btn => { 
-            btn.classList.remove('active'); 
-            btn.classList.add('text-zinc-500'); 
-        });
+        document.querySelectorAll('.mob-nav-item').forEach(btn => { btn.classList.remove('active'); btn.classList.add('text-zinc-500'); });
         
         if(document.getElementById(`nav-${tabId}`)) document.getElementById(`nav-${tabId}`).classList.add('active');
-        if(document.getElementById(`mob-${tabId}`)) { 
-            document.getElementById(`mob-${tabId}`).classList.add('active'); 
-            document.getElementById(`mob-${tabId}`).classList.remove('text-zinc-500'); 
-        }
+        if(document.getElementById(`mob-${tabId}`)) { document.getElementById(`mob-${tabId}`).classList.add('active'); document.getElementById(`mob-${tabId}`).classList.remove('text-zinc-500'); }
         
-        if(tabId === 'driver-tab') {
-            AppControllers.refreshDriverStatus();
-            if(!pollingInterval) AppControllers.startPolling();
-        } else {
-            if(pollingInterval && tabId !== 'passenger-tab') { 
-                clearInterval(pollingInterval); 
-                pollingInterval = null; 
-            }
-        }
+        if(tabId === 'driver-tab') AppControllers.refreshDriverStatus();
     },
     populateRankDropdowns: () => {
         try {
@@ -985,8 +942,7 @@ const AppUI = {
             if (currentDriverSession.state === 'idle') {
                 badge.innerText = 'ONLINE'; badge.className = 'inline-block px-2.5 py-0.5 rounded text-[9px] font-bold tracking-widest border border-emerald-500/20 bg-emerald-500/5 text-emerald-400';
                 btnToggle.innerHTML = 'Go Offline'; btnToggle.className = "figma-btn-secondary px-6 py-3 rounded-xl text-xs font-bold uppercase tracking-widest";
-                emptyState.classList.remove('hidden');
-                document.getElementById('idle-text').innerText = "You are online and ready to receive rides.";
+                emptyState.classList.remove('hidden'); document.getElementById('idle-text').innerText = "You are online and ready to receive rides.";
                 const q = systemData.queues[currentDriverSession.rankId] || [];
                 const pos = q.indexOf(currentDriverSession.id);
                 posText.innerHTML = pos !== -1 ? `Your Queue Position: <span class="font-mono text-white text-sm ml-1">${pos + 1}</span> <span class="text-[11px] text-zinc-500">/ ${q.length} cars live</span>` : 'Syncing queue position...';
@@ -1053,6 +1009,7 @@ const AppUI = {
 
 document.addEventListener('DOMContentLoaded', () => { 
     AppControllers.refreshData().then(() => {
+        AppControllers.startRealtimeSync();
         AppUI.switchTab('passenger-tab');
     }); 
 });
